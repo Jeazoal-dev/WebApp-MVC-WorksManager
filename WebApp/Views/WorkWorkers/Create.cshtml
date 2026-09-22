@@ -1,0 +1,44 @@
+﻿@model WebApp.Models.WorkWorker
+
+@{
+    ViewData["Title"] = "New assignment";
+}
+
+<h1>New assignment</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="WorkId" class="control-label">Work</label>
+                <select asp-for="WorkId" class="form-control" asp-items="ViewBag.WorkId"></select>
+                <span asp-validation-for="WorkId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="WorkerId" class="control-label">Worker</label>
+                <select asp-for="WorkerId" class="form-control" asp-items="ViewBag.WorkerId"></select>
+                <span asp-validation-for="WorkerId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AgreedAmount" class="control-label">Agreed Amount</label>
+                <input asp-for="AgreedAmount" class="form-control" />
+                <span asp-validation-for="AgreedAmount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

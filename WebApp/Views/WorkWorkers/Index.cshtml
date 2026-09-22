@@ -1,0 +1,37 @@
+﻿@model IEnumerable<WebApp.Models.WorkWorker>
+
+@{
+    ViewData["Title"] = "Work Assignments";
+}
+
+<h1>Work Assignments</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">New assignment</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Work</th>
+            <th>Worker</th>
+            <th>@Html.DisplayNameFor(model => model.AgreedAmount)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Work?.Name</td>
+                <td>@item.Worker?.Name</td>
+                <td>@Html.DisplayFor(modelItem => item.AgreedAmount)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

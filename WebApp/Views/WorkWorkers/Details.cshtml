@@ -1,0 +1,25 @@
+﻿@model WebApp.Models.WorkWorker
+
+@{
+    ViewData["Title"] = "Assignment details";
+}
+
+<h1>Assignment details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Work</dt>
+        <dd class="col-sm-10">@Model.Work?.Name</dd>
+
+        <dt class="col-sm-2">Worker</dt>
+        <dd class="col-sm-10">@Model.Worker?.Name</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.AgreedAmount)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.AgreedAmount)</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to list</a>
+</div>

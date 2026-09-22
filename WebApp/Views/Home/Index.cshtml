@@ -1,8 +1,138 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Active Works</h5>
+                <h2>@ViewBag.ActiveWorks</h2>
+                <small>of @ViewBag.TotalWorks total</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Active Workers</h5>
+                <h2>@ViewBag.TotalWorkers</h2>
+                <small>available</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Total Paid</h5>
+                <h2>@ViewBag.TotalPaid.ToString("N2")</h2>
+                <small>to workers</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Total Pending</h5>
+                <h2>@ViewBag.TotalPending.ToString("N2")</h2>
+                <small>to pay</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Active works</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.ActiveWorksList != null)
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Work</th>
+                                <th>Agreed</th>
+                                <th>Paid</th>
+                                <th>Pending</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var work in ViewBag.ActiveWorksList)
+                            {
+                                var agreed = 0m;
+                                var paid = 0m;
+                                foreach (var ww in work.WorkWorkers)
+                                {
+                                    agreed += ww.AgreedAmount;
+                                    foreach (var p in ww.Payments)
+                                    {
+                                        if (!p.Cancelled) paid += p.Amount;
+                                    }
+                                }
+                                var pending = agreed - paid;
+
+                                <tr>
+                                    <td>
+                                        <a asp-controller="Works" asp-action="Details" asp-route-id="@work.Id">
+                                            @work.Name
+                                        </a>
+                                    </td>
+                                    <td>@agreed.ToString("N2")</td>
+                                    <td>@paid.ToString("N2")</td>
+                                    <td>@pending.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No active works.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Recent payments</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentPayments != null)
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Worker</th>
+                                <th>Work</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in ViewBag.RecentPayments)
+                            {
+                                <tr>
+                                    <td>@p.Date.ToString("dd/MM/yyyy")</td>
+                                    <td>@p.WorkWorker?.Worker?.Name</td>
+                                    <td>@p.WorkWorker?.Work?.Name</td>
+                                    <td>@p.Amount.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No recent payments.</p>
+                }
+            </div>
+        </div>
+    </div>
 </div>

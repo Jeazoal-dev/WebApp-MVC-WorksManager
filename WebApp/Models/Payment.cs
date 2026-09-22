@@ -9,7 +9,8 @@ namespace WebApp.Models
 
         [Required]
         public int WorkWorkerId { get; set; }
-        public WorkWorker WorkWorker { get; set; } = null!;
+
+        public WorkWorker? WorkWorker { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
@@ -32,6 +33,5 @@ namespace WebApp.Models
 
         [StringLength(300)]
         public string? Notes { get; set; }
-
     }
 }

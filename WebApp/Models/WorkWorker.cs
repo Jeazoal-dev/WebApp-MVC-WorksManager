@@ -9,11 +9,13 @@ namespace WebApp.Models
 
         [Required]
         public int WorkId { get; set; }
-        public Work Work { get; set; } = null!;
+
+        public Work? Work { get; set; }
 
         [Required]
         public int WorkerId { get; set; }
-        public Worker Worker { get; set; } = null!;
+
+        public Worker? Worker { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal AgreedAmount { get; set; }

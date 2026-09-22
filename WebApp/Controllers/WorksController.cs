@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
@@ -14,23 +15,36 @@ namespace WebApp.Controllers
             _db = db;
         }
 
-        //Get: Works
-        public async Task<ActionResult> Index()
-        { 
+        // GET: Works
+        public async Task<IActionResult> Index()
+        {
             return View(await _db.Works.ToListAsync());
         }
 
-        //GET: Works/Details
-        public async Task<ActionResult> Details(int? id)
+        // GET: Works/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-            var works = await _db.Works.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (works == null) return NotFound();
+            var work = await _db.Works
+                .Include(w => w.WorkWorkers)
+                    .ThenInclude(ww => ww.Worker)
+                .Include(w => w.WorkWorkers)
+                    .ThenInclude(ww => ww.Payments)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            return View(works);
+            if (work == null) return NotFound();
+
+            return View(work);
         }
 
+        // GET: Works/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Works/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Client,StartDate,EndDate,ContractAmount,CollectedAmount,Status,Notes")] Work work)

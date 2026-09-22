@@ -1,0 +1,85 @@
+﻿@model WebApp.Models.Payment
+
+@{
+    ViewData["Title"] = "New payment";
+}
+
+<h1>New payment</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="WorkWorkerId" class="control-label">Assignment</label>
+                <select asp-for="WorkWorkerId" class="form-control" asp-items="ViewBag.WorkWorkerId"></select>
+                <span asp-validation-for="WorkWorkerId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" type="date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PaymentMethod" class="control-label"></label>
+                <select asp-for="PaymentMethod" class="form-control">
+                    <option value="">-- Select method --</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
+                    <option value="Yape">Yape</option>
+                    <option value="Plin">Plin</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Bank" class="control-label"></label>
+                <select asp-for="Bank" class="form-control">
+                    <option value="">-- Select bank --</option>
+                    <option value="BCP">BCP</option>
+                    <option value="Interbank">Interbank</option>
+                    <option value="BBVA">BBVA</option>
+                    <option value="Scotiabank">Scotiabank</option>
+                    <option value="Banco de la Nación">Banco de la Nación</option>
+                    <option value="Banco Pichincha">Banco Pichincha</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <span asp-validation-for="Bank" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Reference" class="control-label"></label>
+                <input asp-for="Reference" class="form-control" />
+                <span asp-validation-for="Reference" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <textarea asp-for="Notes" class="form-control"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
