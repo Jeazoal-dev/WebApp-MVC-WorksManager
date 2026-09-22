@@ -1,34 +1,111 @@
-﻿@model WebApp.Models.Worker
+﻿@model WebApp.Models.WorkerEditViewModel
 
 @{
     ViewData["Title"] = "Worker details";
+    var w = Model.Worker;
 }
 
-<h1>Worker details</h1>
+<h1>@w.Name</h1>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Name)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Personal info</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Document:</strong> @w.Document</p>
+                <p><strong>Phone:</strong> @w.Phone</p>
+                <p><strong>Bank:</strong> @w.Bank</p>
+                <p><strong>Account:</strong> @w.AccountNumber</p>
+                <p>
+                    <strong>Status:</strong>
+                    @{
+                        var badge = w.Status == "Active" ? "bg-success"
+                                  : w.Status == "Inactive" ? "bg-secondary"
+                                  : w.Status == "OnLeave" ? "bg-warning text-dark"
+                                  : "bg-danger";
+                    }
+                    <span class="badge @badge">@w.Status</span>
+                </p>
+            </div>
+        </div>
+    </div>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Document)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Document)</dd>
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h3>@Model.TotalWorks</h3>
+                        <small class="text-muted">Works</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h3>@Model.TotalAgreed.ToString("N2")</h3>
+                        <small class="text-muted">Agreed</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-success">@Model.TotalPaid.ToString("N2")</h3>
+                        <small class="text-muted">Paid</small>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-danger">@Model.TotalPending.ToString("N2")</h3>
+                        <small class="text-muted">Pending</small>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Phone)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Phone)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Bank)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Bank)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.AccountNumber)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.AccountNumber)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Active)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Active)</dd>
-    </dl>
+        <div class="card">
+            <div class="card-header">
+                <h5>Assigned works</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Assignments.Any())
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Work</th>
+                                <th>Agreed</th>
+                                <th>Paid</th>
+                                <th>Pending</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in Model.Assignments)
+                            {
+                                var paid = a.Payments.Where(p => !p.Cancelled).Sum(p => p.Amount);
+                                var pending = a.AgreedAmount - paid;
+                                var status = paid == 0 ? "Pending" : (pending <= 0 ? "Paid" : "Partial");
+                                var badge2 = status == "Paid" ? "bg-success" : (status == "Partial" ? "bg-warning text-dark" : "bg-secondary");
+                                <tr>
+                                    <td>
+                                        <a asp-controller="Works" asp-action="Details" asp-route-id="@a.WorkId">@a.Work?.Name</a>
+                                    </td>
+                                    <td>@a.AgreedAmount.ToString("N2")</td>
+                                    <td>@paid.ToString("N2")</td>
+                                    <td>@pending.ToString("N2")</td>
+                                    <td><span class="badge @badge2">@status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No works assigned yet.</p>
+                }
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to list</a>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@w.Id" class="btn btn-warning">Edit worker</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to list</a>
 </div>

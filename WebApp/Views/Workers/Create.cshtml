@@ -39,8 +39,6 @@
                     <option value="Scotiabank">Scotiabank</option>
                     <option value="Banco de la Nación">Banco de la Nación</option>
                     <option value="Banco Pichincha">Banco Pichincha</option>
-                    <option value="Banco Falabella">Banco Falabella</option>
-                    <option value="Banco Ripley">Banco Ripley</option>
                     <option value="Otro">Otro</option>
                 </select>
                 <span asp-validation-for="Bank" class="text-danger"></span>
@@ -52,10 +50,15 @@
                 <span asp-validation-for="AccountNumber" class="text-danger"></span>
             </div>
 
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
-                </label>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="OnLeave">On leave</option>
+                    <option value="Suspended">Suspended</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
             </div>
 
             <div class="form-group mt-3">

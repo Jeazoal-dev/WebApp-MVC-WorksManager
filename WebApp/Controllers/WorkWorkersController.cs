@@ -44,7 +44,7 @@ namespace WebApp.Controllers
         public IActionResult Create()
         {
             ViewData["WorkId"] = new SelectList(_db.Works, "Id", "Name");
-            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Active), "Id", "Name");
+            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Status == "Active"), "Id", "Name");
             return View();
         }
 
@@ -60,7 +60,7 @@ namespace WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["WorkId"] = new SelectList(_db.Works, "Id", "Name", workWorker.WorkId);
-            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Active), "Id", "Name", workWorker.WorkerId);
+            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Status == "Active"), "Id", "Name", workWorker.WorkerId);
             return View(workWorker);
         }
 
@@ -73,7 +73,7 @@ namespace WebApp.Controllers
             if (workWorker == null) return NotFound();
 
             ViewData["WorkId"] = new SelectList(_db.Works, "Id", "Name", workWorker.WorkId);
-            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Active), "Id", "Name", workWorker.WorkerId);
+            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Status == "Active"), "Id", "Name", workWorker.WorkerId);
             return View(workWorker);
         }
 
@@ -99,7 +99,7 @@ namespace WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["WorkId"] = new SelectList(_db.Works, "Id", "Name", workWorker.WorkId);
-            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Active), "Id", "Name", workWorker.WorkerId);
+            ViewData["WorkerId"] = new SelectList(_db.Workers.Where(w => w.Status == "Active"), "Id", "Name", workWorker.WorkerId);
             return View(workWorker);
         }
 

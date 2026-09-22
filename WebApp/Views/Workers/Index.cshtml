@@ -2,13 +2,34 @@
 
 @{
     ViewData["Title"] = "Workers";
+    var currentStatus = ViewBag.Status as string;
+    int page = ViewBag.Page ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
 }
 
 <h1>Workers</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">New worker</a>
-</p>
+<div class="row mb-3">
+    <div class="col-md-8">
+        <form asp-action="Index" method="get" class="d-flex gap-2">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by name or document..." />
+            <select name="status" class="form-select" style="max-width:180px;">
+                <option value="">All statuses</option>
+                <option value="Active" selected="@(currentStatus == "Active")">Active</option>
+                <option value="Inactive" selected="@(currentStatus == "Inactive")">Inactive</option>
+                <option value="OnLeave" selected="@(currentStatus == "OnLeave")">On leave</option>
+                <option value="Suspended" selected="@(currentStatus == "Suspended")">Suspended</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-action="Index" class="btn btn-secondary">Clear</a>
+        </form>
+    </div>
+    <div class="col-md-4 text-end">
+        <a asp-action="Create" class="btn btn-success">New worker</a>
+    </div>
+</div>
+
+<p class="text-muted">@ViewBag.Total workers found</p>
 
 <table class="table table-striped">
     <thead>
@@ -18,20 +39,24 @@
             <th>@Html.DisplayNameFor(model => model.Phone)</th>
             <th>@Html.DisplayNameFor(model => model.Bank)</th>
             <th>@Html.DisplayNameFor(model => model.AccountNumber)</th>
-            <th>@Html.DisplayNameFor(model => model.Active)</th>
+            <th>@Html.DisplayNameFor(model => model.Status)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
+            var badge = item.Status == "Active" ? "bg-success"
+                      : item.Status == "Inactive" ? "bg-secondary"
+                      : item.Status == "OnLeave" ? "bg-warning text-dark"
+                      : "bg-danger";
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Document)</td>
                 <td>@Html.DisplayFor(modelItem => item.Phone)</td>
                 <td>@Html.DisplayFor(modelItem => item.Bank)</td>
                 <td>@Html.DisplayFor(modelItem => item.AccountNumber)</td>
-                <td>@Html.DisplayFor(modelItem => item.Active)</td>
+                <td><span class="badge @badge">@item.Status</span></td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -41,3 +66,23 @@
         }
     </tbody>
 </table>
+
+@if (totalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(page == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(page - 1)" asp-route-search="@ViewBag.Search" asp-route-status="@ViewBag.Status">Previous</a>
+            </li>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-search="@ViewBag.Search" asp-route-status="@ViewBag.Status">@i</a>
+                </li>
+            }
+            <li class="page-item @(page == totalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(page + 1)" asp-route-search="@ViewBag.Search" asp-route-status="@ViewBag.Status">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

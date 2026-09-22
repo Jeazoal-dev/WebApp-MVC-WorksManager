@@ -21,7 +21,7 @@ namespace WebApp.Controllers
             // Totales generales
             ViewBag.TotalWorks = await _db.Works.CountAsync();
             ViewBag.ActiveWorks = await _db.Works.CountAsync(w => w.Status == "In progress");
-            ViewBag.TotalWorkers = await _db.Workers.CountAsync(w => w.Active);
+            ViewBag.TotalWorkers = await _db.Workers.CountAsync(w => w.Status == "Active");
 
             ViewBag.TotalAgreed = await _db.WorkWorkers.SumAsync(ww => (decimal?)ww.AgreedAmount) ?? 0;
             ViewBag.TotalPaid = await _db.Payments

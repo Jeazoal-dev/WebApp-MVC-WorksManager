@@ -16,13 +16,14 @@ namespace WebApp.Models
         [StringLength(20)]
         public string? Phone { get; set; }
 
-        public bool Active { get; set; } = true;
-
         [StringLength(50)]
         public string? Bank { get; set; }
 
         [StringLength(30)]
         public string? AccountNumber { get; set; }
+
+        [StringLength(30)]
+        public string Status { get; set; } = "Active";
 
         public ICollection<WorkWorker> WorkWorkers { get; set; } = new List<WorkWorker>();
     }
