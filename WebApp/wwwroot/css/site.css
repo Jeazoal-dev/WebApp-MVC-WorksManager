@@ -1,11 +1,12 @@
-/* ============================================================
-   FUENTE MODERNA
-   ============================================================ */
+/* ==========================================================================
+   1. FUENTE
+   ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* ============================================================
-   BASE (default del template - NO TOCAR layout)
-   ============================================================ */
+
+/* ==========================================================================
+   2. BASE (default del template - no tocar layout)
+   ========================================================================== */
 html {
     font-size: 14px;
     position: relative;
@@ -27,12 +28,16 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Foco accesible en cualquier input / botón */
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
-.form-control:focus, .form-check-input:focus {
+/* Foco accesible global */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
     box-shadow: 0 0 0 0.2rem rgba(30, 58, 95, 0.15);
 }
 
+/* Ajustes de los placeholders en inputs flotantes */
 .form-floating > .form-control-plaintext::placeholder,
 .form-floating > .form-control::placeholder {
     color: var(--bs-secondary-color);
@@ -44,28 +49,36 @@ body {
     text-align: start;
 }
 
-/* ============================================================
-   TEMA - moderno
-   ============================================================ */
 
+/* ==========================================================================
+   3. VARIABLES DEL TEMA
+   ========================================================================== */
 :root {
+    /* Marca */
     --brand-primary: #1e3a5f;
     --brand-primary-hover: #152c48;
     --brand-primary-light: #2c5282;
     --brand-accent: #d4a017;
     --brand-accent-hover: #b88a0f;
+    /* Superficies y bordes */
     --surface: #ffffff;
     --border-soft: #e5e9f0;
+    /* Texto */
     --text-primary: #1f2937;
     --text-muted: #64748b;
+    /* Radios */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
+    /* Sombras */
     --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
     --shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
-/* ---------- Tipografía ---------- */
+
+/* ==========================================================================
+   4. TIPOGRAFÍA
+   ========================================================================== */
 h1, h2, h3, h4, h5 {
     color: var(--brand-primary);
     font-weight: 700;
@@ -76,7 +89,10 @@ h1 {
     font-size: 1.85rem;
 }
 
-/* ---------- Navbar ---------- */
+
+/* ==========================================================================
+   5. NAVBAR
+   ========================================================================== */
 .navbar {
     background-color: var(--brand-primary) !important;
     border-bottom: none !important;
@@ -120,7 +136,10 @@ h1 {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
     }
 
-/* ---------- Botones ---------- */
+
+/* ==========================================================================
+   6. BOTONES
+   ========================================================================== */
 .btn {
     border-radius: var(--radius-sm);
     font-weight: 500;
@@ -129,6 +148,7 @@ h1 {
     border-width: 1px;
 }
 
+/* Primario */
 .btn-primary {
     background-color: var(--brand-primary);
     border-color: var(--brand-primary);
@@ -145,6 +165,7 @@ h1 {
         transform: translateY(-1px);
     }
 
+/* Secundario */
 .btn-secondary {
     background-color: #fff;
     border-color: var(--border-soft);
@@ -159,6 +180,7 @@ h1 {
         color: var(--text-primary) !important;
     }
 
+/* Warning (dorado) */
 .btn-warning {
     background-color: var(--brand-accent);
     border-color: var(--brand-accent);
@@ -171,6 +193,7 @@ h1 {
         color: #fff;
     }
 
+/* Danger / Success */
 .btn-danger {
     background-color: #dc2626;
     border-color: #dc2626;
@@ -181,13 +204,46 @@ h1 {
     border-color: #059669;
 }
 
+/* Botones de acción en tablas (Editar / Detalles) */
+.btn-info {
+    background-color: #0ea5e9;
+    border-color: #0ea5e9;
+    color: #fff;
+}
+
+    .btn-info:hover,
+    .btn-info:focus,
+    .btn-info:active {
+        background-color: #0284c7 !important;
+        border-color: #0284c7 !important;
+        color: #fff !important;
+    }
+
+.btn-dark {
+    background-color: #334155;
+    border-color: #334155;
+    color: #fff;
+}
+
+    .btn-dark:hover,
+    .btn-dark:focus,
+    .btn-dark:active {
+        background-color: #1e293b !important;
+        border-color: #1e293b !important;
+        color: #fff !important;
+    }
+
+/* Botones pequeños en tablas */
 .btn-sm {
     padding: 0.35rem 0.75rem;
     font-size: 0.82rem;
     border-radius: 6px;
 }
 
-/* ---------- Formularios ---------- */
+
+/* ==========================================================================
+   7. FORMULARIOS
+   ========================================================================== */
 .form-label,
 .control-label {
     color: #334155;
@@ -217,7 +273,10 @@ h1 {
         outline: none;
     }
 
-/* ---------- Tablas ---------- */
+
+/* ==========================================================================
+   8. TABLAS
+   ========================================================================== */
 .table {
     background-color: #fff;
     margin-bottom: 0;
@@ -263,7 +322,10 @@ h1 {
         --bs-table-accent-bg: #eef4fa;
     }
 
-/* ---------- Panel de filtros (moderno) ---------- */
+
+/* ==========================================================================
+   9. PANEL DE FILTROS Y TOGGLE
+   ========================================================================== */
 .filter-panel {
     background-color: #fff;
     border: 1px solid var(--border-soft);
@@ -297,7 +359,36 @@ h1 {
             background-color: #fff;
         }
 
-/* ---------- Cabecera de página con acción ---------- */
+/* Botón "Filtros" que expande/colapsa el panel */
+.filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .filter-toggle .chevron {
+        transition: transform 0.2s ease;
+        font-size: 0.75rem;
+    }
+
+    .filter-toggle[aria-expanded="true"] .chevron {
+        transform: rotate(180deg);
+    }
+
+/* Cuando está colapsado, no deja hueco */
+.filter-panel.collapse:not(.show) {
+    display: none;
+}
+
+/* Animación de apertura */
+.filter-panel.collapsing {
+    transition: height 0.25s ease;
+}
+
+
+/* ==========================================================================
+   10. CABECERA DE PÁGINA
+   ========================================================================== */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -312,7 +403,10 @@ h1 {
         font-size: 1.85rem;
     }
 
-/* ---------- Badges ---------- */
+
+/* ==========================================================================
+   11. BADGES (pastillas de estado)
+   ========================================================================== */
 .badge {
     padding: 0.35rem 0.7rem;
     border-radius: 999px;
@@ -321,78 +415,7 @@ h1 {
     letter-spacing: 0.2px;
 }
 
-/* ---------- Cards (por si usas) ---------- */
-.card {
-    background-color: #fff;
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-soft);
-}
-
-.card-header {
-    background-color: #fbfcfe;
-    border-bottom: 1px solid var(--border-soft);
-    font-weight: 600;
-    color: var(--brand-primary);
-    padding: 1rem 1.25rem;
-}
-
-.card-body {
-    padding: 1.25rem 1.5rem;
-}
-
-/* ---------- Detalles (Details views) ---------- */
-dl.row dt {
-    color: var(--text-muted);
-    font-weight: 500;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-dl.row dd {
-    color: var(--text-primary);
-    font-weight: 500;
-    margin-bottom: 0.85rem;
-}
-
-/* ---------- Footer ---------- */
-.footer {
-    background-color: #fff;
-    border-top: 1px solid var(--border-soft);
-    color: var(--text-muted);
-    font-size: 0.85rem;
-}
-/* ---------- Botones de acción en tablas ---------- */
-.btn-info {
-    background-color: #0ea5e9;
-    border-color: #0ea5e9;
-    color: #fff;
-}
-
-    .btn-info:hover,
-    .btn-info:focus,
-    .btn-info:active {
-        background-color: #0284c7 !important;
-        border-color: #0284c7 !important;
-        color: #fff !important;
-    }
-
-.btn-dark {
-    background-color: #334155;
-    border-color: #334155;
-    color: #fff;
-}
-
-    .btn-dark:hover,
-    .btn-dark:focus,
-    .btn-dark:active {
-        background-color: #1e293b !important;
-        border-color: #1e293b !important;
-        color: #fff !important;
-    }
-
-/* ---------- Badges de estado (Works) ---------- */
+/* --- Estado de obra (Works) --- */
 .badge-status-inprogress {
     background-color: #dbeafe;
     color: #1e40af;
@@ -417,28 +440,99 @@ dl.row dd {
     border: 1px solid #fecaca;
 }
 
-/* ---------- Toggle de filtros ---------- */
-.filter-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+/* --- Estado de trabajador (Workers) --- */
+.badge-worker-active {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
 }
 
-    .filter-toggle .chevron {
-        transition: transform 0.2s ease;
-        font-size: 0.75rem;
-    }
-
-    .filter-toggle[aria-expanded="true"] .chevron {
-        transform: rotate(180deg);
-    }
-
-/* Panel colapsado: sin margen inferior para que no deje hueco */
-.filter-panel.collapse:not(.show) {
-    display: none;
+.badge-worker-inactive {
+    background-color: #e2e8f0;
+    color: #334155;
+    border: 1px solid #cbd5e1;
 }
 
-/* Cuando se muestra, animar suavemente */
-.filter-panel.collapsing {
-    transition: height 0.25s ease;
+/* --- Estado de pago por asignación (WorkWorkers) --- */
+.badge-payment-paid {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.badge-payment-partial {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.badge-payment-pending {
+    background-color: #e2e8f0;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+/* --- Estado de pago (Payments: activo/cancelado) --- */
+.badge-payment-active {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.badge-payment-cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+
+/* ==========================================================================
+   12. CARDS
+   ========================================================================== */
+.card {
+    background-color: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+}
+
+.card-header {
+    background-color: #fbfcfe;
+    border-bottom: 1px solid var(--border-soft);
+    font-weight: 600;
+    color: var(--brand-primary);
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem 1.5rem;
+}
+
+
+/* ==========================================================================
+   13. VISTAS DE DETALLES
+   ========================================================================== */
+dl.row dt {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+dl.row dd {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.85rem;
+}
+
+
+/* ==========================================================================
+   14. FOOTER
+   ========================================================================== */
+.footer {
+    background-color: #fff;
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
