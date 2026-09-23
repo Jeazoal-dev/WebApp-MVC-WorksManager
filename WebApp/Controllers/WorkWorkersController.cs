@@ -16,13 +16,31 @@ namespace WebApp.Controllers
         }
 
         // GET: WorkWorkers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(WorkWorkerFilterViewModel filter)
         {
-            var workWorkers = _db.WorkWorkers
+            var query = _db.WorkWorkers
                 .Include(w => w.Work)
-                .Include(w => w.Worker);
+                .Include(w => w.Worker)
+                .AsNoTracking()
+                .AsQueryable();
 
-            return View(await workWorkers.ToListAsync());
+            if (filter.WorkId.HasValue)
+                query = query.Where(w => w.WorkId == filter.WorkId.Value);
+
+            if (filter.WorkerId.HasValue)
+                query = query.Where(w => w.WorkerId == filter.WorkerId.Value);
+
+            if (filter.AgreedAmountMin.HasValue)
+                query = query.Where(w => w.AgreedAmount >= filter.AgreedAmountMin.Value);
+
+            if (filter.AgreedAmountMax.HasValue)
+                query = query.Where(w => w.AgreedAmount <= filter.AgreedAmountMax.Value);
+
+            filter.Works = await _db.Works.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
+            filter.Workers = await _db.Workers.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
+            filter.Results = await query.OrderBy(w => w.Work!.Name).ThenBy(w => w.Worker!.Name).ToListAsync();
+
+            return View(filter);
         }
 
         // GET: WorkWorkers/Details/5

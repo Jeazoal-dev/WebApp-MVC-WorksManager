@@ -16,15 +16,51 @@ namespace WebApp.Controllers
         }
 
         // GET: Payments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(PaymentFilterViewModel filter)
         {
-            var payments = _db.Payments
+            var query = _db.Payments
                 .Include(p => p.WorkWorker)
                     .ThenInclude(ww => ww.Work)
                 .Include(p => p.WorkWorker)
-                    .ThenInclude(ww => ww.Worker);
+                    .ThenInclude(ww => ww.Worker)
+                .AsNoTracking()
+                .AsQueryable();
 
-            return View(await payments.ToListAsync());
+            if (filter.WorkId.HasValue)
+                query = query.Where(p => p.WorkWorker!.WorkId == filter.WorkId.Value);
+
+            if (filter.WorkerId.HasValue)
+                query = query.Where(p => p.WorkWorker!.WorkerId == filter.WorkerId.Value);
+
+            if (!string.IsNullOrWhiteSpace(filter.PaymentMethod))
+                query = query.Where(p => p.PaymentMethod != null && p.PaymentMethod.Contains(filter.PaymentMethod));
+
+            if (!string.IsNullOrWhiteSpace(filter.Bank))
+                query = query.Where(p => p.Bank != null && p.Bank.Contains(filter.Bank));
+
+            if (!string.IsNullOrWhiteSpace(filter.Reference))
+                query = query.Where(p => p.Reference != null && p.Reference.Contains(filter.Reference));
+
+            if (filter.DateFrom.HasValue)
+                query = query.Where(p => p.Date >= filter.DateFrom.Value);
+
+            if (filter.DateTo.HasValue)
+                query = query.Where(p => p.Date <= filter.DateTo.Value);
+
+            if (filter.AmountMin.HasValue)
+                query = query.Where(p => p.Amount >= filter.AmountMin.Value);
+
+            if (filter.AmountMax.HasValue)
+                query = query.Where(p => p.Amount <= filter.AmountMax.Value);
+
+            if (filter.Cancelled.HasValue)
+                query = query.Where(p => p.Cancelled == filter.Cancelled.Value);
+
+            filter.Works = await _db.Works.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
+            filter.Workers = await _db.Workers.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
+            filter.Results = await query.OrderByDescending(p => p.Date).ToListAsync();
+
+            return View(filter);
         }
 
         // GET: Payments/Details/5

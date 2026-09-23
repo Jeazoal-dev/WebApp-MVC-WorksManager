@@ -1,22 +1,418 @@
+/* ============================================================
+   FUENTE MODERNA
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ============================================================
+   BASE (default del template - NO TOCAR layout)
+   ============================================================ */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 15px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #1f2937;
+    background-color: #f7f9fc;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Foco accesible en cualquier input / botón */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
+.form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(30, 58, 95, 0.15);
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+/* ============================================================
+   TEMA - moderno
+   ============================================================ */
+
+:root {
+    --brand-primary: #1e3a5f;
+    --brand-primary-hover: #152c48;
+    --brand-primary-light: #2c5282;
+    --brand-accent: #d4a017;
+    --brand-accent-hover: #b88a0f;
+    --surface: #ffffff;
+    --border-soft: #e5e9f0;
+    --text-primary: #1f2937;
+    --text-muted: #64748b;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* ---------- Tipografía ---------- */
+h1, h2, h3, h4, h5 {
+    color: var(--brand-primary);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: 1.85rem;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+    background-color: var(--brand-primary) !important;
+    border-bottom: none !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 3px 0 var(--brand-accent) !important;
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 2rem !important;
+}
+
+    .navbar .navbar-brand {
+        color: #fff !important;
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: -0.01em;
+    }
+
+    .navbar .nav-link {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-weight: 500;
+        padding: 0.4rem 0.85rem !important;
+        border-radius: var(--radius-sm);
+        transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus {
+            color: #fff !important;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+    .navbar .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.25) !important;
+        padding: 0.35rem 0.55rem;
+    }
+
+        .navbar .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(212, 160, 23, 0.35);
+        }
+
+    .navbar .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    }
+
+/* ---------- Botones ---------- */
+.btn {
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    padding: 0.5rem 1.1rem;
+    transition: all 0.15s ease;
+    border-width: 1px;
+}
+
+.btn-primary {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #fff;
+}
+
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        background-color: var(--brand-primary-hover) !important;
+        border-color: var(--brand-primary-hover) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
+        transform: translateY(-1px);
+    }
+
+.btn-secondary {
+    background-color: #fff;
+    border-color: var(--border-soft);
+    color: var(--text-primary);
+}
+
+    .btn-secondary:hover,
+    .btn-secondary:focus,
+    .btn-secondary:active {
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: var(--text-primary) !important;
+    }
+
+.btn-warning {
+    background-color: var(--brand-accent);
+    border-color: var(--brand-accent);
+    color: #fff;
+}
+
+    .btn-warning:hover {
+        background-color: var(--brand-accent-hover);
+        border-color: var(--brand-accent-hover);
+        color: #fff;
+    }
+
+.btn-danger {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-success {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.82rem;
+    border-radius: 6px;
+}
+
+/* ---------- Formularios ---------- */
+.form-label,
+.control-label {
+    color: #334155;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-soft);
+    padding: 0.5rem 0.85rem;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    background-color: #fff;
+}
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--brand-primary-light);
+        box-shadow: 0 0 0 0.2rem rgba(44, 82, 130, 0.12);
+        outline: none;
+    }
+
+/* ---------- Tablas ---------- */
+.table {
+    background-color: #fff;
+    margin-bottom: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-soft);
+}
+
+    .table > :not(caption) > * > * {
+        padding: 0.85rem 1rem;
+        border-color: var(--border-soft);
+    }
+
+    .table thead th {
+        background-color: var(--brand-primary);
+        color: #fff;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        border-bottom: none;
+        padding-top: 0.9rem;
+        padding-bottom: 0.9rem;
+    }
+
+    .table tbody td {
+        vertical-align: middle;
+        color: #334155;
+    }
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: #fbfcfe;
+    --bs-table-accent-bg: #fbfcfe;
+}
+
+.table tbody tr {
+    transition: background-color 0.12s ease;
+}
+
+    .table tbody tr:hover > * {
+        background-color: #eef4fa;
+        --bs-table-accent-bg: #eef4fa;
+    }
+
+/* ---------- Panel de filtros (moderno) ---------- */
+.filter-panel {
+    background-color: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.75rem 1.25rem;
+    margin-bottom: 1.75rem;
+    box-shadow: var(--shadow-soft);
+}
+
+    .filter-panel .form-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+    }
+
+    .filter-panel .row {
+        row-gap: 1rem;
+    }
+
+    .filter-panel .form-control,
+    .filter-panel .form-select {
+        background-color: #f8fafc;
+        border-color: #eef1f6;
+    }
+
+        .filter-panel .form-control:focus,
+        .filter-panel .form-select:focus {
+            background-color: #fff;
+        }
+
+/* ---------- Cabecera de página con acción ---------- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 1.85rem;
+    }
+
+/* ---------- Badges ---------- */
+.badge {
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.2px;
+}
+
+/* ---------- Cards (por si usas) ---------- */
+.card {
+    background-color: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+}
+
+.card-header {
+    background-color: #fbfcfe;
+    border-bottom: 1px solid var(--border-soft);
+    font-weight: 600;
+    color: var(--brand-primary);
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem 1.5rem;
+}
+
+/* ---------- Detalles (Details views) ---------- */
+dl.row dt {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+dl.row dd {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.85rem;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+    background-color: #fff;
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+/* ---------- Botones de acción en tablas ---------- */
+.btn-info {
+    background-color: #0ea5e9;
+    border-color: #0ea5e9;
+    color: #fff;
+}
+
+    .btn-info:hover,
+    .btn-info:focus,
+    .btn-info:active {
+        background-color: #0284c7 !important;
+        border-color: #0284c7 !important;
+        color: #fff !important;
+    }
+
+.btn-dark {
+    background-color: #334155;
+    border-color: #334155;
+    color: #fff;
+}
+
+    .btn-dark:hover,
+    .btn-dark:focus,
+    .btn-dark:active {
+        background-color: #1e293b !important;
+        border-color: #1e293b !important;
+        color: #fff !important;
+    }
+
+/* ---------- Badges de estado (Works) ---------- */
+.badge-status-inprogress {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.badge-status-paused {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.badge-status-finished {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.badge-status-cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
 }

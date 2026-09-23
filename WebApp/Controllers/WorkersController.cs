@@ -17,37 +17,27 @@ namespace WebApp.Controllers
             _db = db;
         }
 
-        // GET: Workers
-        public async Task<IActionResult> Index(string? search, string? status, int page = 1)
+        public async Task<IActionResult> Index(WorkerFilterViewModel filter)
         {
-            var query = _db.Workers.AsQueryable();
+            var query = _db.Workers.AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(w =>
-                    w.Name.Contains(search) ||
-                    (w.Document != null && w.Document.Contains(search)));
-            }
+            if (!string.IsNullOrWhiteSpace(filter.Name))
+                query = query.Where(w => w.Name.Contains(filter.Name));
 
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                query = query.Where(w => w.Status == status);
-            }
+            if (!string.IsNullOrWhiteSpace(filter.Document))
+                query = query.Where(w => w.Document != null && w.Document.Contains(filter.Document));
 
-            var total = await query.CountAsync();
-            var workers = await query
-                .OrderBy(w => w.Name)
-                .Skip((page - 1) * PageSize)
-                .Take(PageSize)
-                .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(filter.Phone))
+                query = query.Where(w => w.Phone != null && w.Phone.Contains(filter.Phone));
 
-            ViewBag.Search = search;
-            ViewBag.Status = status;
-            ViewBag.Page = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)total / PageSize);
-            ViewBag.Total = total;
+            if (!string.IsNullOrWhiteSpace(filter.Bank))
+                query = query.Where(w => w.Bank != null && w.Bank.Contains(filter.Bank));
 
-            return View(workers);
+            if (!string.IsNullOrWhiteSpace(filter.Status))
+                query = query.Where(w => w.Status == filter.Status);
+
+            filter.Results = await query.OrderBy(w => w.Name).ToListAsync();
+            return View(filter);
         }
 
         // GET: Workers/Details/5

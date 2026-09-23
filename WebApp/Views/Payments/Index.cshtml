@@ -1,45 +1,136 @@
-﻿@model IEnumerable<WebApp.Models.Payment>
+﻿@model WebApp.Models.PaymentFilterViewModel
 
 @{
-    ViewData["Title"] = "Payments";
+    ViewData["Title"] = "Pagos";
 }
 
-<h1>Payments</h1>
+<div class="page-header">
+    <h1>Pagos</h1>
+    <a asp-action="Create" class="btn btn-primary">+ Nuevo pago</a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">New payment</a>
-</p>
+<form asp-action="Index" method="get" class="filter-panel">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label asp-for="WorkId" class="form-label"></label>
+            <select asp-for="WorkId" class="form-select">
+                <option value="">-- Todas --</option>
+                @foreach (var w in Model.Works)
+                {
+                    <option value="@w.Id">@w.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="WorkerId" class="form-label"></label>
+            <select asp-for="WorkerId" class="form-select">
+                <option value="">-- Todos --</option>
+                @foreach (var w in Model.Workers)
+                {
+                    <option value="@w.Id">@w.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="PaymentMethod" class="form-label"></label>
+            <input asp-for="PaymentMethod" class="form-control" placeholder="Buscar por método..." />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Bank" class="form-label"></label>
+            <input asp-for="Bank" class="form-control" placeholder="Buscar por banco..." />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Reference" class="form-label"></label>
+            <input asp-for="Reference" class="form-control" placeholder="Buscar por referencia..." />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="DateFrom" class="form-label"></label>
+            <input asp-for="DateFrom" type="date" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="DateTo" class="form-label"></label>
+            <input asp-for="DateTo" type="date" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="AmountMin" class="form-label"></label>
+            <input asp-for="AmountMin" class="form-control" placeholder="Monto mínimo" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="AmountMax" class="form-label"></label>
+            <input asp-for="AmountMax" class="form-control" placeholder="Monto máximo" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Cancelled" class="form-label"></label>
+            <select asp-for="Cancelled" class="form-select">
+                <option value="">-- Todos --</option>
+                <option value="false">Activos</option>
+                <option value="true">Cancelados</option>
+            </select>
+        </div>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Work</th>
-            <th>Worker</th>
-            <th>@Html.DisplayNameFor(model => model.Amount)</th>
-            <th>@Html.DisplayNameFor(model => model.Date)</th>
-            <th>@Html.DisplayNameFor(model => model.PaymentMethod)</th>
-            <th>@Html.DisplayNameFor(model => model.Bank)</th>
-            <th>@Html.DisplayNameFor(model => model.Cancelled)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a asp-action="Index" class="btn btn-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <span class="text-muted">Resultados: <strong>@Model.Results.Count</strong></span>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
             <tr>
-                <td>@item.WorkWorker?.Work?.Name</td>
-                <td>@item.WorkWorker?.Worker?.Name</td>
-                <td>@Html.DisplayFor(modelItem => item.Amount)</td>
-                <td>@Html.DisplayFor(modelItem => item.Date)</td>
-                <td>@Html.DisplayFor(modelItem => item.PaymentMethod)</td>
-                <td>@Html.DisplayFor(modelItem => item.Bank)</td>
-                <td>@Html.DisplayFor(modelItem => item.Cancelled)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>Fecha</th>
+                <th>Obra</th>
+                <th>Trabajador</th>
+                <th class="text-end">Monto</th>
+                <th>Método</th>
+                <th>Banco</th>
+                <th>Referencia</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @if (!Model.Results.Any())
+            {
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-4">No se encontraron resultados.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model.Results)
+                {
+                    <tr>
+                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                        <td>@item.WorkWorker?.Work?.Name</td>
+                        <td>@item.WorkWorker?.Worker?.Name</td>
+                        <td class="text-end">@item.Amount.ToString("N2")</td>
+                        <td>@item.PaymentMethod</td>
+                        <td>@item.Bank</td>
+                        <td>@item.Reference</td>
+                        <td>
+                            @if (item.Cancelled)
+                            {
+                                <span class="badge badge-payment-cancelled">Cancelado</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-payment-active">Activo</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

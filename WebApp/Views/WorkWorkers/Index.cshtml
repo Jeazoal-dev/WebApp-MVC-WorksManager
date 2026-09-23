@@ -1,37 +1,117 @@
-﻿@model IEnumerable<WebApp.Models.WorkWorker>
+﻿@model WebApp.Models.WorkWorkerFilterViewModel
 
 @{
-    ViewData["Title"] = "Work Assignments";
+    ViewData["Title"] = "Asignaciones";
 }
 
-<h1>Work Assignments</h1>
+<div class="page-header">
+    <h1>Asignaciones</h1>
+    <a asp-action="Create" class="btn btn-primary">+ Nueva asignación</a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">New assignment</a>
-</p>
+<form asp-action="Index" method="get" class="filter-panel">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label asp-for="WorkId" class="form-label"></label>
+            <select asp-for="WorkId" class="form-select">
+                <option value="">-- Todas --</option>
+                @foreach (var w in Model.Works)
+                {
+                    <option value="@w.Id">@w.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="WorkerId" class="form-label"></label>
+            <select asp-for="WorkerId" class="form-select">
+                <option value="">-- Todos --</option>
+                @foreach (var w in Model.Workers)
+                {
+                    <option value="@w.Id">@w.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="AgreedAmountMin" class="form-label"></label>
+            <input asp-for="AgreedAmountMin" class="form-control" placeholder="Monto mínimo" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="AgreedAmountMax" class="form-label"></label>
+            <input asp-for="AgreedAmountMax" class="form-control" placeholder="Monto máximo" />
+        </div>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Work</th>
-            <th>Worker</th>
-            <th>@Html.DisplayNameFor(model => model.AgreedAmount)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a asp-action="Index" class="btn btn-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <span class="text-muted">Resultados: <strong>@Model.Results.Count</strong></span>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
             <tr>
-                <td>@item.Work?.Name</td>
-                <td>@item.Worker?.Name</td>
-                <td>@Html.DisplayFor(modelItem => item.AgreedAmount)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>Obra</th>
+                <th>Trabajador</th>
+                <th class="text-end">Acordado</th>
+                <th class="text-end">Pagado</th>
+                <th class="text-end">Pendiente</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @if (!Model.Results.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">No se encontraron resultados.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model.Results)
+                {
+                    var paid = item.Payments?.Where(p => !p.Cancelled).Sum(p => p.Amount) ?? 0;
+                    var pending = item.AgreedAmount - paid;
+
+                    string statusText;
+                    string badgeClass;
+
+                    if (paid == 0)
+                    {
+                        statusText = "Pendiente";
+                        badgeClass = "badge-payment-pending";
+                    }
+                    else if (pending <= 0)
+                    {
+                        statusText = "Pagado";
+                        badgeClass = "badge-payment-paid";
+                    }
+                    else
+                    {
+                        statusText = "Parcial";
+                        badgeClass = "badge-payment-partial";
+                    }
+
+                    <tr>
+                        <td><strong>@item.Work?.Name</strong></td>
+                        <td>@item.Worker?.Name</td>
+                        <td class="text-end">@item.AgreedAmount.ToString("N2")</td>
+                        <td class="text-end">@paid.ToString("N2")</td>
+                        <td class="text-end">@pending.ToString("N2")</td>
+                        <td><span class="badge @badgeClass">@statusText</span></td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
