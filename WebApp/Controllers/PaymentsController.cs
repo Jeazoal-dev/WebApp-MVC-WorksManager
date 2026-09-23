@@ -6,6 +6,9 @@ using WebApp.Models;
 
 namespace WebApp.Controllers
 {
+    // CRUD de pagos a trabajadores. Cada pago está vinculado a una asignación (WorkWorker),
+    // que a su vez relaciona una obra con un trabajador.
+    // La vista Index incluye filtros de búsqueda por obra, trabajador, fechas, montos, etc.
     public class PaymentsController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -16,6 +19,8 @@ namespace WebApp.Controllers
         }
 
         // GET: Payments
+        // Aplica los filtros opcionales del PaymentFilterViewModel y devuelve
+        // también las listas de obras y trabajadores para los dropdowns del filtro.
         public async Task<IActionResult> Index(PaymentFilterViewModel filter)
         {
             var query = _db.Payments
@@ -56,9 +61,13 @@ namespace WebApp.Controllers
             if (filter.Cancelled.HasValue)
                 query = query.Where(p => p.Cancelled == filter.Cancelled.Value);
 
+            // Listas para los dropdowns del panel de filtros.
             filter.Works = await _db.Works.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
             filter.Workers = await _db.Workers.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
-            filter.Results = await query.OrderByDescending(p => p.Date).ToListAsync();
+
+            filter.Results = await query
+                .OrderByDescending(p => p.Date)
+                .ToListAsync();
 
             return View(filter);
         }
@@ -81,18 +90,11 @@ namespace WebApp.Controllers
         }
 
         // GET: Payments/Create
+        // El parámetro opcional workWorkerId permite precargar la asignación
+        // cuando se llega desde "Registrar pago" en otra vista.
         public IActionResult Create(int? workWorkerId)
         {
-            var workWorkers = _db.WorkWorkers
-                .Include(ww => ww.Work)
-                .Include(ww => ww.Worker)
-                .Select(ww => new
-                {
-                    ww.Id,
-                    Display = ww.Work!.Name + " - " + ww.Worker!.Name
-                });
-
-            ViewData["WorkWorkerId"] = new SelectList(workWorkers, "Id", "Display", workWorkerId);
+            PopulateWorkWorkersDropDown(workWorkerId);
             return View();
         }
 
@@ -101,24 +103,15 @@ namespace WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,WorkWorkerId,Amount,Date,PaymentMethod,Bank,Reference,UserId,Cancelled,Notes")] Payment payment)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _db.Add(payment);
-                await _db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                PopulateWorkWorkersDropDown(payment.WorkWorkerId);
+                return View(payment);
             }
 
-            var workWorkers = _db.WorkWorkers
-                .Include(ww => ww.Work)
-                .Include(ww => ww.Worker)
-                .Select(ww => new
-                {
-                    ww.Id,
-                    Display = ww.Work!.Name + " - " + ww.Worker!.Name
-                });
-
-            ViewData["WorkWorkerId"] = new SelectList(workWorkers, "Id", "Display", payment.WorkWorkerId);
-            return View(payment);
+            _db.Payments.Add(payment);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Payments/Edit/5
@@ -129,16 +122,7 @@ namespace WebApp.Controllers
             var payment = await _db.Payments.FindAsync(id);
             if (payment == null) return NotFound();
 
-            var workWorkers = _db.WorkWorkers
-                .Include(ww => ww.Work)
-                .Include(ww => ww.Worker)
-                .Select(ww => new
-                {
-                    ww.Id,
-                    Display = ww.Work!.Name + " - " + ww.Worker!.Name
-                });
-
-            ViewData["WorkWorkerId"] = new SelectList(workWorkers, "Id", "Display", payment.WorkWorkerId);
+            PopulateWorkWorkersDropDown(payment.WorkWorkerId);
             return View(payment);
         }
 
@@ -149,32 +133,24 @@ namespace WebApp.Controllers
         {
             if (id != payment.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _db.Update(payment);
-                    await _db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PaymentExists(payment.Id)) return NotFound();
-                    else throw;
-                }
-                return RedirectToAction(nameof(Index));
+                PopulateWorkWorkersDropDown(payment.WorkWorkerId);
+                return View(payment);
             }
 
-            var workWorkers = _db.WorkWorkers
-                .Include(ww => ww.Work)
-                .Include(ww => ww.Worker)
-                .Select(ww => new
-                {
-                    ww.Id,
-                    Display = ww.Work!.Name + " - " + ww.Worker!.Name
-                });
+            try
+            {
+                _db.Payments.Update(payment);
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PaymentExists(payment.Id)) return NotFound();
+                throw;
+            }
 
-            ViewData["WorkWorkerId"] = new SelectList(workWorkers, "Id", "Display", payment.WorkWorkerId);
-            return View(payment);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Payments/Delete/5
@@ -203,14 +179,27 @@ namespace WebApp.Controllers
             if (payment != null)
             {
                 _db.Payments.Remove(payment);
+                await _db.SaveChangesAsync();
             }
-            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PaymentExists(int id)
+        private bool PaymentExists(int id) => _db.Payments.Any(e => e.Id == id);
+
+        // Carga el SelectList de asignaciones con el formato "Obra - Trabajador"
+        // usado por los formularios de Create y Edit.
+        private void PopulateWorkWorkersDropDown(int? selectedId = null)
         {
-            return _db.Payments.Any(e => e.Id == id);
+            var workWorkers = _db.WorkWorkers
+                .Include(ww => ww.Work)
+                .Include(ww => ww.Worker)
+                .Select(ww => new
+                {
+                    ww.Id,
+                    Display = ww.Work!.Name + " - " + ww.Worker!.Name
+                });
+
+            ViewData["WorkWorkerId"] = new SelectList(workWorkers, "Id", "Display", selectedId);
         }
     }
 }
