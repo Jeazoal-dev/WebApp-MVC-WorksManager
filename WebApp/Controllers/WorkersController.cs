@@ -1,22 +1,22 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
 
 namespace WebApp.Controllers
 {
-
+    // CRUD de trabajadores. La vista Index incluye filtros de búsqueda.
     public class WorkersController : Controller
     {
         private readonly ApplicationDbContext _db;
-        private const int PageSize = 10;
 
         public WorkersController(ApplicationDbContext db)
         {
             _db = db;
         }
 
+        // GET: Workers
+        // Aplica los filtros opcionales del WorkerFilterViewModel.
         public async Task<IActionResult> Index(WorkerFilterViewModel filter)
         {
             var query = _db.Workers.AsNoTracking().AsQueryable();
@@ -36,7 +36,10 @@ namespace WebApp.Controllers
             if (!string.IsNullOrWhiteSpace(filter.Status))
                 query = query.Where(w => w.Status == filter.Status);
 
-            filter.Results = await query.OrderBy(w => w.Name).ToListAsync();
+            filter.Results = await query
+                .OrderBy(w => w.Name)
+                .ToListAsync();
+
             return View(filter);
         }
 
@@ -45,6 +48,8 @@ namespace WebApp.Controllers
         {
             if (id == null) return NotFound();
 
+            // Se incluyen los pagos de cada asignación para calcular
+            // el total pendiente del trabajador en la vista.
             var worker = await _db.Workers
                 .Include(w => w.WorkWorkers)
                     .ThenInclude(ww => ww.Work)
@@ -68,23 +73,18 @@ namespace WebApp.Controllers
         }
 
         // GET: Workers/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         // POST: Workers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Document,Phone,Bank,AccountNumber,Status")] Worker worker)
         {
-            if (ModelState.IsValid)
-            {
-                _db.Add(worker);
-                await _db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(worker);
+            if (!ModelState.IsValid) return View(worker);
+
+            _db.Workers.Add(worker);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Workers/Edit/5
@@ -104,22 +104,20 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Document,Phone,Bank,AccountNumber,Status")] Worker worker)
         {
             if (id != worker.Id) return NotFound();
+            if (!ModelState.IsValid) return View(worker);
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _db.Update(worker);
-                    await _db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!WorkerExists(worker.Id)) return NotFound();
-                    else throw;
-                }
-                return RedirectToAction(nameof(Index));
+                _db.Workers.Update(worker);
+                await _db.SaveChangesAsync();
             }
-            return View(worker);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!WorkerExists(worker.Id)) return NotFound();
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Workers/Delete/5
@@ -127,9 +125,7 @@ namespace WebApp.Controllers
         {
             if (id == null) return NotFound();
 
-            var worker = await _db.Workers
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var worker = await _db.Workers.FirstOrDefaultAsync(m => m.Id == id);
             if (worker == null) return NotFound();
 
             return View(worker);
@@ -144,14 +140,11 @@ namespace WebApp.Controllers
             if (worker != null)
             {
                 _db.Workers.Remove(worker);
+                await _db.SaveChangesAsync();
             }
-            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool WorkerExists(int id)
-        {
-            return _db.Workers.Any(e => e.Id == id);
-        }
+        private bool WorkerExists(int id) => _db.Workers.Any(e => e.Id == id);
     }
 }
