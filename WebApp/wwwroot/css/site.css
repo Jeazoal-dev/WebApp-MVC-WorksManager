@@ -536,3 +536,26 @@ dl.row dd {
     color: var(--text-muted);
     font-size: 0.85rem;
 }
+
+/* ---------- Navbar: link activo ---------- */
+.navbar .nav-link.active {
+    color: var(--brand-accent) !important;
+    background-color: rgba(212, 160, 23, 0.12);
+    font-weight: 600;
+}
+
+    .navbar .nav-link.active::after {
+        content: "";
+        position: absolute;
+        left: 0.85rem;
+        right: 0.85rem;
+        bottom: -0.85rem;
+        height: 3px;
+        background-color: var(--brand-accent);
+        border-radius: 3px 3px 0 0;
+    }
+
+/* El ::after necesita que el link tenga position: relative */
+.navbar .nav-link {
+    position: relative;
+}
