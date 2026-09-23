@@ -16,9 +16,39 @@ namespace WebApp.Controllers
         }
 
         // GET: Works
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(WorkFilterViewModel filter)
         {
-            return View(await _db.Works.ToListAsync());
+            var query = _db.Works.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.Name))
+                query = query.Where(w => w.Name.Contains(filter.Name));
+
+            if (!string.IsNullOrWhiteSpace(filter.Client))
+                query = query.Where(w => w.Client != null && w.Client.Contains(filter.Client));
+
+            if (filter.Status.HasValue)
+                query = query.Where(w => w.Status == filter.Status.Value);
+
+            if (filter.StartDateFrom.HasValue)
+                query = query.Where(w => w.StartDate >= filter.StartDateFrom.Value);
+
+            if (filter.StartDateTo.HasValue)
+                query = query.Where(w => w.StartDate <= filter.StartDateTo.Value);
+
+            if (filter.EndDateFrom.HasValue)
+                query = query.Where(w => w.EndDate.HasValue && w.EndDate >= filter.EndDateFrom.Value);
+
+            if (filter.EndDateTo.HasValue)
+                query = query.Where(w => w.EndDate.HasValue && w.EndDate <= filter.EndDateTo.Value);
+
+            if (filter.ContractAmountMin.HasValue)
+                query = query.Where(w => w.ContractAmount >= filter.ContractAmountMin.Value);
+
+            if (filter.ContractAmountMax.HasValue)
+                query = query.Where(w => w.ContractAmount <= filter.ContractAmountMax.Value);
+
+            filter.Results = await query.OrderByDescending(w => w.StartDate).ToListAsync();
+            return View(filter);
         }
 
         // GET: Works/Details/5

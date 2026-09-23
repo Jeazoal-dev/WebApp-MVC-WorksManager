@@ -26,8 +26,9 @@ namespace WebApp.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal CollectedAmount { get; set; }
 
-        [StringLength(50)]
-        public string Status { get; set; } = "In progress";
+        [Display(Name = "Estado")]
+        public WorkStatus Status { get; set; } = WorkStatus.InProgress;
+
 
         [StringLength(500)]
         public string? Notes { get; set; }

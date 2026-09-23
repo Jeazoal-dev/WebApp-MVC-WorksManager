@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Data;
+using WebApp.Models;
 
 namespace WebApp.Controllers
 {
@@ -20,7 +21,7 @@ namespace WebApp.Controllers
         {
             // Totales generales
             ViewBag.TotalWorks = await _db.Works.CountAsync();
-            ViewBag.ActiveWorks = await _db.Works.CountAsync(w => w.Status == "In progress");
+            ViewBag.ActiveWorks = await _db.Works.CountAsync(w => w.Status == WorkStatus.InProgress);
             ViewBag.TotalWorkers = await _db.Workers.CountAsync(w => w.Status == "Active");
 
             ViewBag.TotalAgreed = await _db.WorkWorkers.SumAsync(ww => (decimal?)ww.AgreedAmount) ?? 0;
@@ -43,7 +44,7 @@ namespace WebApp.Controllers
             ViewBag.ActiveWorksList = await _db.Works
                 .Include(w => w.WorkWorkers)
                     .ThenInclude(ww => ww.Payments)
-                .Where(w => w.Status == "In progress")
+                .Where(w => w.Status == WorkStatus.InProgress)
                 .ToListAsync();
 
             return View();
