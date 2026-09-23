@@ -416,3 +416,29 @@ dl.row dd {
     color: #991b1b;
     border: 1px solid #fecaca;
 }
+
+/* ---------- Toggle de filtros ---------- */
+.filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .filter-toggle .chevron {
+        transition: transform 0.2s ease;
+        font-size: 0.75rem;
+    }
+
+    .filter-toggle[aria-expanded="true"] .chevron {
+        transform: rotate(180deg);
+    }
+
+/* Panel colapsado: sin margen inferior para que no deje hueco */
+.filter-panel.collapse:not(.show) {
+    display: none;
+}
+
+/* Cuando se muestra, animar suavemente */
+.filter-panel.collapsing {
+    transition: height 0.25s ease;
+}
