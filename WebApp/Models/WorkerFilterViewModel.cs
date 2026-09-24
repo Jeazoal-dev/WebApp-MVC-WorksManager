@@ -25,6 +25,8 @@ namespace WebApp.Models
         public int TotalCount { get; set; }
         public int TotalPages { get; set; }
 
+        public string? SortBy { get; set; }
+        public string SortDir { get; set; } = "asc";
         public List<Worker> Results { get; set; } = new();
     }
 }

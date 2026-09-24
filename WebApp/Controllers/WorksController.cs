@@ -49,6 +49,19 @@ namespace WebApp.Controllers
             if (filter.ContractAmountMax.HasValue)
                 query = query.Where(w => w.ContractAmount <= filter.ContractAmountMax.Value);
 
+            // Ordenamiento dinámico según la columna clickeada en la vista.
+            bool desc = string.Equals(filter.SortDir, "desc", StringComparison.OrdinalIgnoreCase);
+            query = filter.SortBy switch
+            {
+                "name" => desc ? query.OrderByDescending(w => w.Name) : query.OrderBy(w => w.Name),
+                "client" => desc ? query.OrderByDescending(w => w.Client) : query.OrderBy(w => w.Client),
+                "startdate" => desc ? query.OrderByDescending(w => w.StartDate) : query.OrderBy(w => w.StartDate),
+                "enddate" => desc ? query.OrderByDescending(w => w.EndDate) : query.OrderBy(w => w.EndDate),
+                "contractamount" => desc ? query.OrderByDescending(w => w.ContractAmount) : query.OrderBy(w => w.ContractAmount),
+                "status" => desc ? query.OrderByDescending(w => w.Status) : query.OrderBy(w => w.Status),
+                _ => query.OrderByDescending(w => w.StartDate) // por defecto
+            };
+
             // Paginación
             filter.Page = filter.Page < 1 ? 1 : filter.Page;
             filter.TotalCount = await query.CountAsync();
@@ -58,7 +71,6 @@ namespace WebApp.Controllers
                 filter.Page = filter.TotalPages;
 
             filter.Results = await query
-                .OrderByDescending(w => w.StartDate)
                 .Skip((filter.Page - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .ToListAsync();
@@ -97,6 +109,8 @@ namespace WebApp.Controllers
 
             _db.Works.Add(work);
             await _db.SaveChangesAsync();
+
+            TempData["Success"] = $"Obra \"{work.Name}\" creada correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -130,6 +144,7 @@ namespace WebApp.Controllers
                 throw;
             }
 
+            TempData["Success"] = $"Obra \"{work.Name}\" actualizada correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -152,8 +167,12 @@ namespace WebApp.Controllers
             var work = await _db.Works.FindAsync(id);
             if (work != null)
             {
+                // Se guarda el nombre antes de borrar porque luego no es accesible.
+                var name = work.Name;
                 _db.Works.Remove(work);
                 await _db.SaveChangesAsync();
+
+                TempData["Success"] = $"Obra \"{name}\" eliminada.";
             }
             return RedirectToAction(nameof(Index));
         }

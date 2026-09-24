@@ -1,25 +1,67 @@
 ﻿@model WebApp.Models.WorkWorker
 
 @{
-    ViewData["Title"] = "Assignment details";
+    ViewData["Title"] = "Detalles de asignación";
+
+    var paid = Model.Payments?.Where(p => !p.Cancelled).Sum(p => p.Amount) ?? 0;
+    var pending = Model.AgreedAmount - paid;
+
+    string payStatus;
+    string payBadge;
+
+    if (paid == 0)
+    {
+        payStatus = "Pendiente";
+        payBadge = "badge-payment-pending";
+    }
+    else if (pending <= 0)
+    {
+        payStatus = "Pagado";
+        payBadge = "badge-payment-paid";
+    }
+    else
+    {
+        payStatus = "Parcial";
+        payBadge = "badge-payment-partial";
+    }
 }
 
-<h1>Assignment details</h1>
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Work</dt>
-        <dd class="col-sm-10">@Model.Work?.Name</dd>
-
-        <dt class="col-sm-2">Worker</dt>
-        <dd class="col-sm-10">@Model.Worker?.Name</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.AgreedAmount)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.AgreedAmount)</dd>
-    </dl>
+<div class="page-header">
+    <div>
+        <h1>Asignación</h1>
+        <p class="text-muted mb-0">@Model.Work?.Name — @Model.Worker?.Name</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar asignación</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to list</a>
+
+<div class="detail-card">
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Obra</span>
+            <span class="detail-value">@Model.Work?.Name</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Trabajador</span>
+            <span class="detail-value">@Model.Worker?.Name</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Monto acordado</span>
+            <span class="detail-value">@Model.AgreedAmount.ToString("N2")</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Estado</span>
+            <span class="detail-value"><span class="badge @payBadge">@payStatus</span></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Pagado</span>
+            <span class="detail-value">@paid.ToString("N2")</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Pendiente</span>
+            <span class="detail-value">@pending.ToString("N2")</span>
+        </div>
+    </div>
 </div>

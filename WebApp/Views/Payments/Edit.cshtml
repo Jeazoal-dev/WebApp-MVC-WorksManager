@@ -1,71 +1,82 @@
 ﻿@model WebApp.Models.Payment
 
 @{
-    ViewData["Title"] = "Edit payment";
+    ViewData["Title"] = "Editar pago";
 }
 
-<h1>Edit payment</h1>
+<div class="page-header">
+    <h1>Editar pago</h1>
+</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+<div class="form-card">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
 
-            <div class="form-group">
-                <label asp-for="WorkWorkerId" class="control-label">Assignment</label>
-                <select asp-for="WorkWorkerId" class="form-control" asp-items="ViewBag.WorkWorkerId"></select>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="WorkWorkerId" class="form-label">Asignación (Obra - Trabajador)</label>
+                <select asp-for="WorkWorkerId" class="form-select" asp-items="ViewBag.WorkWorkerId">
+                    <option value="">-- Selecciona una asignación --</option>
+                </select>
                 <span asp-validation-for="WorkWorkerId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="Amount" class="form-label">Monto</label>
                 <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="Date" class="form-label">Fecha</label>
                 <input asp-for="Date" type="date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="PaymentMethod" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="PaymentMethod" class="form-label">Método de pago</label>
                 <input asp-for="PaymentMethod" class="form-control" />
                 <span asp-validation-for="PaymentMethod" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Bank" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="Bank" class="form-label">Banco</label>
                 <input asp-for="Bank" class="form-control" />
                 <span asp-validation-for="Bank" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Reference" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="Reference" class="form-label">Referencia</label>
                 <input asp-for="Reference" class="form-control" />
                 <span asp-validation-for="Reference" class="text-danger"></span>
             </div>
 
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Cancelled" /> Cancelled
-                </label>
+            <div class="col-md-6">
+                <label asp-for="UserId" class="form-label">Usuario</label>
+                <input asp-for="UserId" class="form-control" />
+                <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <textarea asp-for="Notes" class="form-control"></textarea>
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="form-check">
+                    <input asp-for="Cancelled" class="form-check-input" />
+                    <label asp-for="Cancelled" class="form-check-label">Cancelado</label>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Notes" class="form-label">Notas</label>
+                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
+        </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-            </div>
-        </form>
-    </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

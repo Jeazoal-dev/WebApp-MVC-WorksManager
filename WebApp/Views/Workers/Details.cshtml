@@ -1,111 +1,173 @@
 ﻿@model WebApp.Models.WorkerEditViewModel
 
 @{
-    ViewData["Title"] = "Worker details";
-    var w = Model.Worker;
+    ViewData["Title"] = "Detalles del trabajador";
+
+    var isActive = string.Equals(Model.Worker.Status, "Active", StringComparison.OrdinalIgnoreCase);
+    var statusText = isActive ? "Activo" : "Inactivo";
+    var badgeClass = isActive ? "badge-worker-active" : "badge-worker-inactive";
 }
 
-<h1>@w.Name</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5>Personal info</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>Document:</strong> @w.Document</p>
-                <p><strong>Phone:</strong> @w.Phone</p>
-                <p><strong>Bank:</strong> @w.Bank</p>
-                <p><strong>Account:</strong> @w.AccountNumber</p>
-                <p>
-                    <strong>Status:</strong>
-                    @{
-                        var badge = w.Status == "Active" ? "bg-success"
-                                  : w.Status == "Inactive" ? "bg-secondary"
-                                  : w.Status == "OnLeave" ? "bg-warning text-dark"
-                                  : "bg-danger";
-                    }
-                    <span class="badge @badge">@w.Status</span>
-                </p>
-            </div>
-        </div>
+<div class="page-header">
+    <div>
+        <h1>@Model.Worker.Name</h1>
+        <p class="text-muted mb-0">Documento: @Model.Worker.Document</p>
     </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Worker.Id" class="btn btn-warning">Editar trabajador</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+    </div>
+</div>
 
-    <div class="col-md-8">
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5>Summary</h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-3">
-                        <h3>@Model.TotalWorks</h3>
-                        <small class="text-muted">Works</small>
-                    </div>
-                    <div class="col-md-3">
-                        <h3>@Model.TotalAgreed.ToString("N2")</h3>
-                        <small class="text-muted">Agreed</small>
-                    </div>
-                    <div class="col-md-3">
-                        <h3 class="text-success">@Model.TotalPaid.ToString("N2")</h3>
-                        <small class="text-muted">Paid</small>
-                    </div>
-                    <div class="col-md-3">
-                        <h3 class="text-danger">@Model.TotalPending.ToString("N2")</h3>
-                        <small class="text-muted">Pending</small>
-                    </div>
-                </div>
-            </div>
+<div class="detail-card">
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Nombre</span>
+            <span class="detail-value">@Model.Worker.Name</span>
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h5>Assigned works</h5>
-            </div>
-            <div class="card-body">
-                @if (Model.Assignments.Any())
-                {
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Work</th>
-                                <th>Agreed</th>
-                                <th>Paid</th>
-                                <th>Pending</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var a in Model.Assignments)
-                            {
-                                var paid = a.Payments.Where(p => !p.Cancelled).Sum(p => p.Amount);
-                                var pending = a.AgreedAmount - paid;
-                                var status = paid == 0 ? "Pending" : (pending <= 0 ? "Paid" : "Partial");
-                                var badge2 = status == "Paid" ? "bg-success" : (status == "Partial" ? "bg-warning text-dark" : "bg-secondary");
-                                <tr>
-                                    <td>
-                                        <a asp-controller="Works" asp-action="Details" asp-route-id="@a.WorkId">@a.Work?.Name</a>
-                                    </td>
-                                    <td>@a.AgreedAmount.ToString("N2")</td>
-                                    <td>@paid.ToString("N2")</td>
-                                    <td>@pending.ToString("N2")</td>
-                                    <td><span class="badge @badge2">@status</span></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <p class="text-muted">No works assigned yet.</p>
-                }
-            </div>
+        <div class="detail-item">
+            <span class="detail-label">Estado</span>
+            <span class="detail-value"><span class="badge @badgeClass">@statusText</span></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Documento</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Worker.Document) ? "—" : Model.Worker.Document)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Teléfono</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Worker.Phone) ? "—" : Model.Worker.Phone)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Banco</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Worker.Bank) ? "—" : Model.Worker.Bank)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Número de cuenta</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Worker.AccountNumber) ? "—" : Model.Worker.AccountNumber)</span>
         </div>
     </div>
 </div>
 
-<div class="mt-3">
-    <a asp-action="Edit" asp-route-id="@w.Id" class="btn btn-warning">Edit worker</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to list</a>
+<div class="page-header">
+    <h3 class="mb-0">Resumen de pagos</h3>
+</div>
+
+<div class="kpi-grid mb-4">
+    <div class="kpi-card kpi-blue">
+        <div class="kpi-header">
+            <p class="kpi-label">Obras asignadas</p>
+            <div class="kpi-icon">🏗️</div>
+        </div>
+        <div class="kpi-value">@Model.TotalWorks</div>
+        <p class="kpi-subtitle">en total</p>
+    </div>
+
+    <div class="kpi-card kpi-green">
+        <div class="kpi-header">
+            <p class="kpi-label">Total acordado</p>
+            <div class="kpi-icon">💰</div>
+        </div>
+        <div class="kpi-value">@Model.TotalAgreed.ToString("N2")</div>
+        <p class="kpi-subtitle">pactado</p>
+    </div>
+
+    <div class="kpi-card kpi-cyan">
+        <div class="kpi-header">
+            <p class="kpi-label">Total pagado</p>
+            <div class="kpi-icon">💵</div>
+        </div>
+        <div class="kpi-value">@Model.TotalPaid.ToString("N2")</div>
+        <p class="kpi-subtitle">recibido</p>
+    </div>
+
+    <div class="kpi-card kpi-red">
+        <div class="kpi-header">
+            <p class="kpi-label">Total pendiente</p>
+            <div class="kpi-icon">⏳</div>
+        </div>
+        <div class="kpi-value">@Model.TotalPending.ToString("N2")</div>
+        <p class="kpi-subtitle">por cobrar</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h3 class="mb-0">Obras asignadas</h3>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Obra</th>
+                <th class="text-end">Acordado</th>
+                <th class="text-end">Pagado</th>
+                <th class="text-end">Pendiente</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Assignments == null || !Model.Assignments.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">Este trabajador no tiene obras asignadas.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var ww in Model.Assignments)
+                {
+                    var paid = ww.Payments?.Where(p => !p.Cancelled).Sum(p => p.Amount) ?? 0;
+                    var pending = ww.AgreedAmount - paid;
+
+                    string payStatus;
+                    string payBadge;
+
+                    if (paid == 0)
+                    {
+                        payStatus = "Pendiente";
+                        payBadge = "badge-payment-pending";
+                    }
+                    else if (pending <= 0)
+                    {
+                        payStatus = "Pagado";
+                        payBadge = "badge-payment-paid";
+                    }
+                    else
+                    {
+                        payStatus = "Parcial";
+                        payBadge = "badge-payment-partial";
+                    }
+
+                    <tr>
+                        <td><strong>@ww.Work?.Name</strong></td>
+                        <td class="text-end">@ww.AgreedAmount.ToString("N2")</td>
+                        <td class="text-end">@paid.ToString("N2")</td>
+                        <td class="text-end">@pending.ToString("N2")</td>
+                        <td><span class="badge @payBadge">@payStatus</span></td>
+                        <td class="text-end">
+                            <div class="action-buttons">
+                                <a asp-controller="Works" asp-action="Details" asp-route-id="@ww.WorkId"
+                                   class="btn btn-sm btn-dark">Ver obra</a>
+                                <a asp-controller="WorkWorkers" asp-action="Edit" asp-route-id="@ww.Id"
+                                   class="btn btn-sm btn-info">Editar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        @if (Model.Assignments != null && Model.Assignments.Any())
+        {
+            <tfoot>
+                <tr class="fw-bold">
+                    <td>Totales</td>
+                    <td class="text-end">@Model.TotalAgreed.ToString("N2")</td>
+                    <td class="text-end">@Model.TotalPaid.ToString("N2")</td>
+                    <td class="text-end">@Model.TotalPending.ToString("N2")</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        }
+    </table>
 </div>

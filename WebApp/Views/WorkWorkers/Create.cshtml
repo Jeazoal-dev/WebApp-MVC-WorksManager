@@ -1,40 +1,46 @@
 ﻿@model WebApp.Models.WorkWorker
 
 @{
-    ViewData["Title"] = "New assignment";
+    ViewData["Title"] = "Nueva asignación";
 }
 
-<h1>New assignment</h1>
+<div class="page-header">
+    <h1>Nueva asignación</h1>
+</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-card">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="WorkId" class="control-label">Work</label>
-                <select asp-for="WorkId" class="form-control" asp-items="ViewBag.WorkId"></select>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="WorkId" class="form-label">Obra</label>
+                <select asp-for="WorkId" class="form-select" asp-items="ViewBag.WorkId">
+                    <option value="">-- Selecciona una obra --</option>
+                </select>
                 <span asp-validation-for="WorkId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="WorkerId" class="control-label">Worker</label>
-                <select asp-for="WorkerId" class="form-control" asp-items="ViewBag.WorkerId"></select>
+            <div class="col-md-6">
+                <label asp-for="WorkerId" class="form-label">Trabajador</label>
+                <select asp-for="WorkerId" class="form-select" asp-items="ViewBag.WorkerId">
+                    <option value="">-- Selecciona un trabajador --</option>
+                </select>
                 <span asp-validation-for="WorkerId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="AgreedAmount" class="control-label">Agreed Amount</label>
-                <input asp-for="AgreedAmount" class="form-control" />
+            <div class="col-md-6">
+                <label asp-for="AgreedAmount" class="form-label">Monto acordado</label>
+                <input asp-for="AgreedAmount" class="form-control" placeholder="0.00" />
                 <span asp-validation-for="AgreedAmount" class="text-danger"></span>
             </div>
+        </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-            </div>
-        </form>
-    </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar asignación</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

@@ -87,12 +87,72 @@
     <table class="table table-striped align-middle table-works">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Cliente</th>
-                <th>Fecha inicio</th>
-                <th>Fecha fin</th>
-                <th class="text-end">Monto contrato</th>
-                <th>Estado</th>
+                <th class="sortable @(Model.SortBy == "name" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="name"
+                       asp-route-SortDir="@(Model.SortBy == "name" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Client="@Model.Client"
+                       asp-route-Status="@Model.Status"
+                       asp-route-StartDateFrom="@Model.StartDateFrom" asp-route-StartDateTo="@Model.StartDateTo"
+                       asp-route-EndDateFrom="@Model.EndDateFrom" asp-route-EndDateTo="@Model.EndDateTo"
+                       asp-route-ContractAmountMin="@Model.ContractAmountMin" asp-route-ContractAmountMax="@Model.ContractAmountMax">
+                        Nombre <span class="sort-icon">@(Model.SortBy == "name" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "client" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="client"
+                       asp-route-SortDir="@(Model.SortBy == "client" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Client="@Model.Client"
+                       asp-route-Status="@Model.Status"
+                       asp-route-StartDateFrom="@Model.StartDateFrom" asp-route-StartDateTo="@Model.StartDateTo"
+                       asp-route-EndDateFrom="@Model.EndDateFrom" asp-route-EndDateTo="@Model.EndDateTo"
+                       asp-route-ContractAmountMin="@Model.ContractAmountMin" asp-route-ContractAmountMax="@Model.ContractAmountMax">
+                        Cliente <span class="sort-icon">@(Model.SortBy == "client" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "startdate" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="startdate"
+                       asp-route-SortDir="@(Model.SortBy == "startdate" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Client="@Model.Client"
+                       asp-route-Status="@Model.Status"
+                       asp-route-StartDateFrom="@Model.StartDateFrom" asp-route-StartDateTo="@Model.StartDateTo"
+                       asp-route-EndDateFrom="@Model.EndDateFrom" asp-route-EndDateTo="@Model.EndDateTo"
+                       asp-route-ContractAmountMin="@Model.ContractAmountMin" asp-route-ContractAmountMax="@Model.ContractAmountMax">
+                        Fecha inicio <span class="sort-icon">@(Model.SortBy == "startdate" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "enddate" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="enddate"
+                       asp-route-SortDir="@(Model.SortBy == "enddate" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Client="@Model.Client"
+                       asp-route-Status="@Model.Status"
+                       asp-route-StartDateFrom="@Model.StartDateFrom" asp-route-StartDateTo="@Model.StartDateTo"
+                       asp-route-EndDateFrom="@Model.EndDateFrom" asp-route-EndDateTo="@Model.EndDateTo"
+                       asp-route-ContractAmountMin="@Model.ContractAmountMin" asp-route-ContractAmountMax="@Model.ContractAmountMax">
+                        Fecha fin <span class="sort-icon">@(Model.SortBy == "enddate" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable text-end @(Model.SortBy == "contractamount" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="contractamount"
+                       asp-route-SortDir="@(Model.SortBy == "contractamount" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Client="@Model.Client"
+                       asp-route-Status="@Model.Status"
+                       asp-route-StartDateFrom="@Model.StartDateFrom" asp-route-StartDateTo="@Model.StartDateTo"
+                       asp-route-EndDateFrom="@Model.EndDateFrom" asp-route-EndDateTo="@Model.EndDateTo"
+                       asp-route-ContractAmountMin="@Model.ContractAmountMin" asp-route-ContractAmountMax="@Model.ContractAmountMax">
+                        Monto contrato <span class="sort-icon">@(Model.SortBy == "contractamount" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "status" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="status"
+                       asp-route-SortDir="@(Model.SortBy == "status" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Client="@Model.Client"
+                       asp-route-Status="@Model.Status"
+                       asp-route-StartDateFrom="@Model.StartDateFrom" asp-route-StartDateTo="@Model.StartDateTo"
+                       asp-route-EndDateFrom="@Model.EndDateFrom" asp-route-EndDateTo="@Model.EndDateTo"
+                       asp-route-ContractAmountMin="@Model.ContractAmountMin" asp-route-ContractAmountMax="@Model.ContractAmountMax">
+                        Estado <span class="sort-icon">@(Model.SortBy == "status" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
                 <th class="text-end">Acciones</th>
             </tr>
         </thead>
@@ -117,13 +177,13 @@
                     };
 
                     <tr>
-                        <td><strong>@item.Name</strong></td>
-                        <td>@item.Client</td>
-                        <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
-                        <td>@(item.EndDate?.ToString("dd/MM/yyyy") ?? "—")</td>
-                        <td class="text-end">@item.ContractAmount.ToString("N2")</td>
-                        <td><span class="badge @badgeClass">@statusText</span></td>
-                        <td class="text-end">
+                        <td data-label="Nombre"><strong>@item.Name</strong></td>
+                        <td data-label="Cliente">@item.Client</td>
+                        <td data-label="Fecha inicio">@item.StartDate.ToString("dd/MM/yyyy")</td>
+                        <td data-label="Fecha fin">@(item.EndDate?.ToString("dd/MM/yyyy") ?? "—")</td>
+                        <td data-label="Monto contrato">@item.ContractAmount.ToString("N2")</td>
+                        <td data-label="Estado"><span class="badge @badgeClass">@statusText</span></td>
+                        <td data-label="Acciones">
                             <div class="action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>

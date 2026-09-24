@@ -70,9 +70,30 @@
     <table class="table table-striped align-middle table-works">
         <thead>
             <tr>
-                <th>Obra</th>
-                <th>Trabajador</th>
-                <th class="text-end">Acordado</th>
+                <th class="sortable @(Model.SortBy == "work" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="work"
+                       asp-route-SortDir="@(Model.SortBy == "work" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-AgreedAmountMin="@Model.AgreedAmountMin" asp-route-AgreedAmountMax="@Model.AgreedAmountMax">
+                        Obra <span class="sort-icon">@(Model.SortBy == "work" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "worker" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="worker"
+                       asp-route-SortDir="@(Model.SortBy == "worker" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-AgreedAmountMin="@Model.AgreedAmountMin" asp-route-AgreedAmountMax="@Model.AgreedAmountMax">
+                        Trabajador <span class="sort-icon">@(Model.SortBy == "worker" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable text-end @(Model.SortBy == "agreedamount" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="agreedamount"
+                       asp-route-SortDir="@(Model.SortBy == "agreedamount" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-AgreedAmountMin="@Model.AgreedAmountMin" asp-route-AgreedAmountMax="@Model.AgreedAmountMax">
+                        Acordado <span class="sort-icon">@(Model.SortBy == "agreedamount" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
                 <th class="text-end">Pagado</th>
                 <th class="text-end">Pendiente</th>
                 <th>Estado</th>
@@ -113,13 +134,13 @@
                     }
 
                     <tr>
-                        <td><strong>@item.Work?.Name</strong></td>
-                        <td>@item.Worker?.Name</td>
-                        <td class="text-end">@item.AgreedAmount.ToString("N2")</td>
-                        <td class="text-end">@paid.ToString("N2")</td>
-                        <td class="text-end">@pending.ToString("N2")</td>
-                        <td><span class="badge @badgeClass">@statusText</span></td>
-                        <td class="text-end">
+                        <td data-label="Obra"><strong>@item.Work?.Name</strong></td>
+                        <td data-label="Trabajador">@item.Worker?.Name</td>
+                        <td data-label="Acordado">@item.AgreedAmount.ToString("N2")</td>
+                        <td data-label="Pagado">@paid.ToString("N2")</td>
+                        <td data-label="Pendiente">@pending.ToString("N2")</td>
+                        <td data-label="Estado"><span class="badge @badgeClass">@statusText</span></td>
+                        <td data-label="Acciones">
                             <div class="action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>

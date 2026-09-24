@@ -123,7 +123,6 @@ h1 {
             font-weight: 600;
         }
 
-/* Subrayado inferior del link activo: SOLO en desktop. */
 @media (min-width: 768px) {
     .navbar .nav-link.active::after {
         content: "";
@@ -377,150 +376,122 @@ h1 {
     .table-works th:nth-child(1) {
         width: 18%;
     }
-    /* Nombre */
+
     .table-works th:nth-child(2) {
         width: 16%;
     }
-    /* Cliente */
+
     .table-works th:nth-child(3) {
         width: 11%;
     }
-    /* Fecha inicio */
+
     .table-works th:nth-child(4) {
         width: 11%;
     }
-    /* Fecha fin */
+
     .table-works th:nth-child(5) {
         width: 12%;
     }
-    /* Monto contrato */
+
     .table-works th:nth-child(6) {
         width: 11%;
     }
-    /* Estado */
+
     .table-works th:nth-child(7) {
         width: 21%;
     }
-    /* Acciones */
 
     /* --- Workers (7 columnas) --- */
     .table-workers th:nth-child(1) {
         width: 16%;
     }
-    /* Nombre */
+
     .table-workers th:nth-child(2) {
         width: 12%;
     }
-    /* Documento */
+
     .table-workers th:nth-child(3) {
         width: 12%;
     }
-    /* Teléfono */
+
     .table-workers th:nth-child(4) {
         width: 12%;
     }
-    /* Banco */
+
     .table-workers th:nth-child(5) {
         width: 14%;
     }
-    /* Cuenta */
+
     .table-workers th:nth-child(6) {
         width: 12%;
     }
-    /* Estado */
+
     .table-workers th:nth-child(7) {
         width: 22%;
     }
-    /* Acciones */
 
     /* --- WorkWorkers (7 columnas) --- */
     .table-workworkers th:nth-child(1) {
         width: 18%;
     }
-    /* Obra */
+
     .table-workworkers th:nth-child(2) {
         width: 16%;
     }
-    /* Trabajador */
+
     .table-workworkers th:nth-child(3) {
         width: 12%;
     }
-    /* Acordado */
+
     .table-workworkers th:nth-child(4) {
         width: 12%;
     }
-    /* Pagado */
+
     .table-workworkers th:nth-child(5) {
         width: 12%;
     }
-    /* Pendiente */
+
     .table-workworkers th:nth-child(6) {
         width: 10%;
     }
-    /* Estado */
+
     .table-workworkers th:nth-child(7) {
         width: 20%;
     }
-    /* Acciones */
 
     /* --- Payments (9 columnas) --- */
-    .table-payments th:nth-child(1) {
-        width: 8%;
-    }
-    /* Fecha */
-    .table-payments th:nth-child(2) {
-        width: 13%;
-    }
-    /* Obra */
-    .table-payments th:nth-child(3) {
-        width: 13%;
-    }
-    /* Trabajador */
-    .table-payments th:nth-child(4) {
-        width: 9%;
-    }
-    /* Monto */
-    .table-payments th:nth-child(5) {
-        width: 9%;
-    }
-    /* Método */
-    .table-payments th:nth-child(6) {
-        width: 8%;
-    }
-    /* Banco */
-    .table-payments th:nth-child(7) {
-        width: 9%;
-    }
-    /* Referencia */
-    .table-payments th:nth-child(8) {
-        width: 8%;
-    }
-    /* Estado */
-    .table-payments th:nth-child(9) {
-        width: 23%;
-    }
-    /* Acciones */
+.table-payments {
+    table-layout: auto;
+}
 
-    /* Payments: padding y botones compactos */
-    .table-payments > :not(caption) > * > * {
-        padding-left: 0.6rem;
-        padding-right: 0.6rem;
+    .table-payments th,
+    .table-payments td {
+        white-space: nowrap;
     }
 
-    .table-payments th:last-child,
-    .table-payments td:last-child {
-        padding-right: 0.85rem;
-    }
-
-    .table-payments .action-buttons {
-        gap: 0.25rem;
-    }
-
-        .table-payments .action-buttons .btn-sm {
-            padding: 0.28rem 0.5rem;
-            font-size: 0.72rem;
-            border-radius: 5px;
+        /* Columnas que deben verse completas siempre (ancho natural) */
+        .table-payments th:nth-child(1), /* Fecha */
+        .table-payments th:nth-child(4), /* Monto */
+        .table-payments th:nth-child(5), /* Método */
+        .table-payments th:nth-child(6), /* Banco */
+        .table-payments th:nth-child(7), /* Referencia */
+        .table-payments th:nth-child(8) { /* Estado */
+            width: 1%;
+            white-space: nowrap;
         }
+
+        /* Columnas con texto largo: absorben el espacio restante */
+        .table-payments th:nth-child(2), /* Obra */
+        .table-payments th:nth-child(3) { /* Trabajador */
+            width: auto;
+        }
+
+        /* Acciones: ancho mínimo garantizado para que quepan los 3 botones */
+        .table-payments th:nth-child(9) {
+            width: 1%;
+            white-space: nowrap;
+        }
+
 
 
 /* ==========================================================================
@@ -707,7 +678,7 @@ h1 {
 
 
 /* ==========================================================================
-   13. VISTAS DE DETALLES
+   13. VISTAS DE DETALLES (dl.row)
    ========================================================================== */
 dl.row dt {
     color: var(--text-muted);
@@ -738,8 +709,6 @@ dl.row dd {
 /* ==========================================================================
    15. DASHBOARD
    ========================================================================== */
-
-/* ---------- Encabezado ---------- */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -760,7 +729,6 @@ dl.row dd {
         margin-top: 0.25rem;
     }
 
-/* ---------- Grid de KPIs ---------- */
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -883,7 +851,6 @@ dl.row dd {
         transition: width 0.4s ease;
     }
 
-/* ---------- Paneles (tablas del dashboard) ---------- */
 .panel {
     background-color: #fff;
     border: 1px solid var(--border-soft);
@@ -1001,7 +968,6 @@ dl.row dd {
     background-color: transparent;
 }
 
-/* Empty state */
 .panel-empty {
     padding: 2.5rem 1rem;
     text-align: center;
@@ -1337,56 +1303,126 @@ dl.row dd {
             font-size: 1rem;
         }
 
-    /* Tablas */
+    /* ---------- Tablas en móvil: modo tarjeta ---------- */
     .table-responsive {
         border-radius: var(--radius-md);
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        overflow-x: visible;
+        border: none;
     }
-
-    .table {
-        font-size: 0.85rem;
-    }
-
-        .table > :not(caption) > * > * {
-            padding: 0.6rem 0.7rem;
-        }
-
-        .table thead th {
-            font-size: 0.68rem;
-            padding-top: 0.7rem;
-            padding-bottom: 0.7rem;
-            white-space: nowrap;
-        }
 
     .table-works,
     .table-workers,
     .table-workworkers,
     .table-payments {
-        min-width: 900px;
+        min-width: 0;
+        table-layout: auto;
+        border: none;
+        box-shadow: none;
+        background-color: transparent;
+        border-radius: 0;
     }
 
-        .table-works td,
-        .table-workers td,
-        .table-workworkers td,
-        .table-payments td {
-            white-space: normal;
-            overflow: visible;
+        .table-works thead,
+        .table-workers thead,
+        .table-workworkers thead,
+        .table-payments thead {
+            display: none;
         }
 
-    .panel .table tbody td {
-        padding: 0.75rem 0.8rem;
-        font-size: 0.85rem;
-    }
+        .table-works tbody tr,
+        .table-workers tbody tr,
+        .table-workworkers tbody tr,
+        .table-payments tbody tr {
+            display: block;
+            background-color: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            padding: 0.5rem 0.85rem;
+            margin-bottom: 0.85rem;
+        }
 
-    .panel .table thead th {
-        padding: 0.7rem 0.8rem;
-    }
+            .table-works tbody tr:hover > *,
+            .table-workers tbody tr:hover > *,
+            .table-workworkers tbody tr:hover > *,
+            .table-payments tbody tr:hover > * {
+                background-color: transparent;
+            }
 
-    .table .btn-sm {
-        padding: 0.3rem 0.55rem;
-        font-size: 0.75rem;
-        margin-bottom: 0.2rem;
+        .table-works tbody td,
+        .table-workers tbody td,
+        .table-workworkers tbody td,
+        .table-payments tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.55rem 0 !important;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            font-size: 0.9rem;
+            text-align: right !important;
+        }
+
+            .table-works tbody td:last-child,
+            .table-workers tbody td:last-child,
+            .table-workworkers tbody td:last-child,
+            .table-payments tbody td:last-child {
+                border-bottom: none;
+                padding-top: 0.75rem !important;
+            }
+
+            .table-works tbody td::before,
+            .table-workers tbody td::before,
+            .table-workworkers tbody td::before,
+            .table-payments tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--text-muted);
+                text-align: left;
+                flex-shrink: 0;
+            }
+
+            .table-works tbody td:last-child,
+            .table-workers tbody td:last-child,
+            .table-workworkers tbody td:last-child,
+            .table-payments tbody td:last-child {
+                display: block;
+                text-align: left !important;
+                padding-top: 0.65rem !important;
+            }
+
+                .table-works tbody td:last-child::before,
+                .table-workers tbody td:last-child::before,
+                .table-workworkers tbody td:last-child::before,
+                .table-payments tbody td:last-child::before {
+                    display: block;
+                    margin-bottom: 0.4rem;
+                }
+
+            .table-works tbody td[colspan],
+            .table-workers tbody td[colspan],
+            .table-workworkers tbody td[colspan],
+            .table-payments tbody td[colspan] {
+                display: block;
+                text-align: center !important;
+                border-bottom: none;
+            }
+
+                .table-works tbody td[colspan]::before,
+                .table-workers tbody td[colspan]::before,
+                .table-workworkers tbody td[colspan]::before,
+                .table-payments tbody td[colspan]::before {
+                    display: none;
+                }
+
+    .table tbody td .badge {
+        font-size: 0.7rem;
     }
 
     /* Panel header */
@@ -1493,3 +1529,212 @@ dl.row dd {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* ==========================================================================
+   22. TOAST NOTIFICATIONS
+   ========================================================================== */
+.toast-container-custom {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 380px;
+    pointer-events: none;
+}
+
+.toast-custom {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #fff;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    padding: 0.9rem 1rem;
+    min-width: 300px;
+    pointer-events: auto;
+    animation: toastSlideIn 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .toast-custom.toast-hiding {
+        animation: toastSlideOut 0.25s ease forwards;
+    }
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+}
+
+.toast-custom .toast-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    color: #fff;
+}
+
+.toast-custom .toast-body-custom {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.toast-custom .toast-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+    .toast-custom .toast-close:hover {
+        color: var(--text-primary);
+    }
+
+/* Barra lateral de color por tipo */
+.toast-custom::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+.toast-success::before {
+    background-color: #059669;
+}
+
+.toast-success .toast-icon {
+    background-color: #059669;
+}
+
+.toast-error::before {
+    background-color: #dc2626;
+}
+
+.toast-error .toast-icon {
+    background-color: #dc2626;
+}
+
+.toast-warning::before {
+    background-color: #d97706;
+}
+
+.toast-warning .toast-icon {
+    background-color: #d97706;
+}
+
+.toast-info::before {
+    background-color: #0ea5e9;
+}
+
+.toast-info .toast-icon {
+    background-color: #0ea5e9;
+}
+
+@media (max-width: 767.98px) {
+    .toast-container-custom {
+        left: 0.75rem;
+        right: 0.75rem;
+        max-width: none;
+    }
+
+    .toast-custom {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+
+/* ==========================================================================
+   23. ENCABEZADOS DE TABLA ORDENABLES
+   ========================================================================== */
+
+/* La celda se convierte en contenedor sin padding (el link lo maneja) */
+.table thead th.sortable {
+    padding: 0 !important;
+    background-color: var(--brand-primary) !important;
+    color: #fff !important;
+}
+
+    /* El link del header ocupa toda la celda y se ve blanco como los demás */
+    .table thead th.sortable > a {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.4rem;
+        width: 100%;
+        padding: 0.9rem 1rem !important;
+        color: #fff !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        background-color: transparent;
+    }
+
+        .table thead th.sortable > a:hover,
+        .table thead th.sortable > a:focus {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+
+    /* Columna activa (por la que se está ordenando) */
+    .table thead th.sortable.active {
+        background-color: var(--brand-primary-hover) !important;
+    }
+
+    /* Ícono de la flecha */
+    .table thead th.sortable .sort-icon {
+        font-size: 0.65rem;
+        opacity: 0.5;
+        line-height: 1;
+        color: #fff;
+        transition: opacity 0.15s ease;
+    }
+
+    .table thead th.sortable.active .sort-icon {
+        opacity: 1;
+    }
+
+    /* Alineación derecha para columnas numéricas */
+    .table thead th.sortable.text-end > a {
+        justify-content: flex-end;
+    }

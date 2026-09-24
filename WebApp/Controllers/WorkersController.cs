@@ -17,8 +17,6 @@ namespace WebApp.Controllers
 
         // GET: Workers
         // Aplica los filtros opcionales del WorkerFilterViewModel.
-        // GET: Workers
-        // GET: Workers
         public async Task<IActionResult> Index(WorkerFilterViewModel filter)
         {
             var query = _db.Workers.AsNoTracking().AsQueryable();
@@ -38,6 +36,18 @@ namespace WebApp.Controllers
             if (!string.IsNullOrWhiteSpace(filter.Status))
                 query = query.Where(w => w.Status == filter.Status);
 
+            // Ordenamiento dinámico según la columna clickeada en la vista.
+            bool desc = string.Equals(filter.SortDir, "desc", StringComparison.OrdinalIgnoreCase);
+            query = filter.SortBy switch
+            {
+                "name" => desc ? query.OrderByDescending(w => w.Name) : query.OrderBy(w => w.Name),
+                "document" => desc ? query.OrderByDescending(w => w.Document) : query.OrderBy(w => w.Document),
+                "phone" => desc ? query.OrderByDescending(w => w.Phone) : query.OrderBy(w => w.Phone),
+                "bank" => desc ? query.OrderByDescending(w => w.Bank) : query.OrderBy(w => w.Bank),
+                "status" => desc ? query.OrderByDescending(w => w.Status) : query.OrderBy(w => w.Status),
+                _ => query.OrderBy(w => w.Name) // por defecto
+            };
+
             // Paginación
             filter.Page = filter.Page < 1 ? 1 : filter.Page;
             filter.TotalCount = await query.CountAsync();
@@ -47,7 +57,6 @@ namespace WebApp.Controllers
                 filter.Page = filter.TotalPages;
 
             filter.Results = await query
-                .OrderBy(w => w.Name)
                 .Skip((filter.Page - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .ToListAsync();
@@ -96,6 +105,8 @@ namespace WebApp.Controllers
 
             _db.Workers.Add(worker);
             await _db.SaveChangesAsync();
+
+            TempData["Success"] = $"Trabajador \"{worker.Name}\" creado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -129,6 +140,7 @@ namespace WebApp.Controllers
                 throw;
             }
 
+            TempData["Success"] = $"Trabajador \"{worker.Name}\" actualizado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -151,8 +163,12 @@ namespace WebApp.Controllers
             var worker = await _db.Workers.FindAsync(id);
             if (worker != null)
             {
+                // Se guarda el nombre antes de borrar porque luego no es accesible.
+                var name = worker.Name;
                 _db.Workers.Remove(worker);
                 await _db.SaveChangesAsync();
+
+                TempData["Success"] = $"Trabajador \"{name}\" eliminado.";
             }
             return RedirectToAction(nameof(Index));
         }

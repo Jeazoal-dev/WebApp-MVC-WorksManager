@@ -41,6 +41,16 @@ namespace WebApp.Controllers
             if (filter.AgreedAmountMax.HasValue)
                 query = query.Where(w => w.AgreedAmount <= filter.AgreedAmountMax.Value);
 
+            // Ordenamiento dinámico según la columna clickeada en la vista.
+            bool desc = string.Equals(filter.SortDir, "desc", StringComparison.OrdinalIgnoreCase);
+            query = filter.SortBy switch
+            {
+                "work" => desc ? query.OrderByDescending(w => w.Work!.Name) : query.OrderBy(w => w.Work!.Name),
+                "worker" => desc ? query.OrderByDescending(w => w.Worker!.Name) : query.OrderBy(w => w.Worker!.Name),
+                "agreedamount" => desc ? query.OrderByDescending(w => w.AgreedAmount) : query.OrderBy(w => w.AgreedAmount),
+                _ => query.OrderBy(w => w.Work!.Name).ThenBy(w => w.Worker!.Name) // por defecto
+            };
+
             // Listas para los dropdowns del panel de filtros.
             filter.Works = await _db.Works.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
             filter.Workers = await _db.Workers.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
@@ -54,8 +64,6 @@ namespace WebApp.Controllers
                 filter.Page = filter.TotalPages;
 
             filter.Results = await query
-                .OrderBy(w => w.Work!.Name)
-                .ThenBy(w => w.Worker!.Name)
                 .Skip((filter.Page - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .ToListAsync();
@@ -71,6 +79,7 @@ namespace WebApp.Controllers
             var workWorker = await _db.WorkWorkers
                 .Include(w => w.Work)
                 .Include(w => w.Worker)
+                .Include(w => w.Payments)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (workWorker == null) return NotFound();
@@ -98,6 +107,8 @@ namespace WebApp.Controllers
 
             _db.WorkWorkers.Add(workWorker);
             await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Asignación creada correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -137,6 +148,7 @@ namespace WebApp.Controllers
                 throw;
             }
 
+            TempData["Success"] = "Asignación actualizada correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -148,6 +160,7 @@ namespace WebApp.Controllers
             var workWorker = await _db.WorkWorkers
                 .Include(w => w.Work)
                 .Include(w => w.Worker)
+                .Include(w => w.Payments)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (workWorker == null) return NotFound();
@@ -165,6 +178,8 @@ namespace WebApp.Controllers
             {
                 _db.WorkWorkers.Remove(workWorker);
                 await _db.SaveChangesAsync();
+
+                TempData["Success"] = "Asignación eliminada.";
             }
             return RedirectToAction(nameof(Index));
         }

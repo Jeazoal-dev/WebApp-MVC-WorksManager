@@ -61,6 +61,18 @@ namespace WebApp.Controllers
             if (filter.Cancelled.HasValue)
                 query = query.Where(p => p.Cancelled == filter.Cancelled.Value);
 
+            // Ordenamiento dinámico según la columna clickeada en la vista.
+            bool desc = string.Equals(filter.SortDir, "desc", StringComparison.OrdinalIgnoreCase);
+            query = filter.SortBy switch
+            {
+                "date" => desc ? query.OrderByDescending(p => p.Date) : query.OrderBy(p => p.Date),
+                "amount" => desc ? query.OrderByDescending(p => p.Amount) : query.OrderBy(p => p.Amount),
+                "method" => desc ? query.OrderByDescending(p => p.PaymentMethod) : query.OrderBy(p => p.PaymentMethod),
+                "bank" => desc ? query.OrderByDescending(p => p.Bank) : query.OrderBy(p => p.Bank),
+                "status" => desc ? query.OrderByDescending(p => p.Cancelled) : query.OrderBy(p => p.Cancelled),
+                _ => query.OrderByDescending(p => p.Date) // por defecto
+            };
+
             // Listas para los dropdowns del panel de filtros.
             filter.Works = await _db.Works.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
             filter.Workers = await _db.Workers.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
@@ -74,7 +86,6 @@ namespace WebApp.Controllers
                 filter.Page = filter.TotalPages;
 
             filter.Results = await query
-                .OrderByDescending(p => p.Date)
                 .Skip((filter.Page - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .ToListAsync();
@@ -121,6 +132,8 @@ namespace WebApp.Controllers
 
             _db.Payments.Add(payment);
             await _db.SaveChangesAsync();
+
+            TempData["Success"] = $"Pago de {payment.Amount:N2} registrado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -160,6 +173,7 @@ namespace WebApp.Controllers
                 throw;
             }
 
+            TempData["Success"] = "Pago actualizado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -190,6 +204,8 @@ namespace WebApp.Controllers
             {
                 _db.Payments.Remove(payment);
                 await _db.SaveChangesAsync();
+
+                TempData["Success"] = "Pago eliminado.";
             }
             return RedirectToAction(nameof(Index));
         }

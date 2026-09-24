@@ -1,43 +1,70 @@
 ﻿@model WebApp.Models.Payment
 
 @{
-    ViewData["Title"] = "Payment details";
+    ViewData["Title"] = "Detalles del pago";
 }
 
-<h1>Payment details</h1>
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Work</dt>
-        <dd class="col-sm-10">@Model.WorkWorker?.Work?.Name</dd>
-
-        <dt class="col-sm-2">Worker</dt>
-        <dd class="col-sm-10">@Model.WorkWorker?.Worker?.Name</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Amount)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Amount)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Date)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Date)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.PaymentMethod)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.PaymentMethod)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Bank)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Bank)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Reference)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Reference)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Cancelled)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Cancelled)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Notes)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Notes)</dd>
-    </dl>
+<div class="page-header">
+    <div>
+        <h1>Pago @Model.Reference</h1>
+        <p class="text-muted mb-0">@Model.Date.ToString("dd/MM/yyyy")</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar pago</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to list</a>
+
+<div class="detail-card">
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Obra</span>
+            <span class="detail-value">@Model.WorkWorker?.Work?.Name</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Trabajador</span>
+            <span class="detail-value">@Model.WorkWorker?.Worker?.Name</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Monto</span>
+            <span class="detail-value">@Model.Amount.ToString("N2")</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Fecha</span>
+            <span class="detail-value">@Model.Date.ToString("dd/MM/yyyy")</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Método de pago</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.PaymentMethod) ? "—" : Model.PaymentMethod)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Banco</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Bank) ? "—" : Model.Bank)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Referencia</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Reference) ? "—" : Model.Reference)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Usuario</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.UserId) ? "—" : Model.UserId)</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Estado</span>
+            <span class="detail-value">
+                @if (Model.Cancelled)
+                {
+                    <span class="badge badge-payment-cancelled">Cancelado</span>
+                }
+                else
+                {
+                    <span class="badge badge-payment-active">Activo</span>
+                }
+            </span>
+        </div>
+        <div class="detail-item detail-full">
+            <span class="detail-label">Notas</span>
+            <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Notes) ? "—" : Model.Notes)</span>
+        </div>
+    </div>
 </div>

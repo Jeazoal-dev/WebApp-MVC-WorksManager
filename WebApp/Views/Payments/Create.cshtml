@@ -1,81 +1,81 @@
 ﻿@model WebApp.Models.Payment
 
 @{
-    ViewData["Title"] = "New payment";
+    ViewData["Title"] = "Nuevo pago";
 }
 
-<h1>New payment</h1>
+<div class="page-header">
+    <h1>Nuevo pago</h1>
+</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-card">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="WorkWorkerId" class="control-label">Assignment</label>
-                <select asp-for="WorkWorkerId" class="form-control" asp-items="ViewBag.WorkWorkerId"></select>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="WorkWorkerId" class="form-label">Asignación (Obra - Trabajador)</label>
+                <select asp-for="WorkWorkerId" class="form-select" asp-items="ViewBag.WorkWorkerId">
+                    <option value="">-- Selecciona una asignación --</option>
+                </select>
                 <span asp-validation-for="WorkWorkerId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
+            <div class="col-md-6">
+                <label asp-for="Amount" class="form-label">Monto</label>
+                <input asp-for="Amount" class="form-control" placeholder="0.00" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="Date" class="form-label">Fecha</label>
                 <input asp-for="Date" type="date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="PaymentMethod" class="control-label"></label>
-                <select asp-for="PaymentMethod" class="form-control">
-                    <option value="">-- Select method --</option>
-                    <option value="Efectivo">Efectivo</option>
-                    <option value="Transferencia">Transferencia</option>
-                    <option value="Yape">Yape</option>
-                    <option value="Plin">Plin</option>
-                    <option value="Cheque">Cheque</option>
-                    <option value="Otro">Otro</option>
-                </select>
+            <div class="col-md-6">
+                <label asp-for="PaymentMethod" class="form-label">Método de pago</label>
+                <input asp-for="PaymentMethod" class="form-control" placeholder="Ej. Transferencia" />
                 <span asp-validation-for="PaymentMethod" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Bank" class="control-label"></label>
-                <select asp-for="Bank" class="form-control">
-                    <option value="">-- Select bank --</option>
-                    <option value="BCP">BCP</option>
-                    <option value="Interbank">Interbank</option>
-                    <option value="BBVA">BBVA</option>
-                    <option value="Scotiabank">Scotiabank</option>
-                    <option value="Banco de la Nación">Banco de la Nación</option>
-                    <option value="Banco Pichincha">Banco Pichincha</option>
-                    <option value="Otro">Otro</option>
-                </select>
+            <div class="col-md-6">
+                <label asp-for="Bank" class="form-label">Banco</label>
+                <input asp-for="Bank" class="form-control" placeholder="Ej. Interbank" />
                 <span asp-validation-for="Bank" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Reference" class="control-label"></label>
-                <input asp-for="Reference" class="form-control" />
+            <div class="col-md-6">
+                <label asp-for="Reference" class="form-label">Referencia</label>
+                <input asp-for="Reference" class="form-control" placeholder="Ej. OP-0001" />
                 <span asp-validation-for="Reference" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <textarea asp-for="Notes" class="form-control"></textarea>
-                <span asp-validation-for="Notes" class="text-danger"></span>
+            <div class="col-md-6">
+                <label asp-for="UserId" class="form-label">Usuario</label>
+                <input asp-for="UserId" class="form-control" />
+                <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="form-check">
+                    <input asp-for="Cancelled" class="form-check-input" />
+                    <label asp-for="Cancelled" class="form-check-label">Cancelado</label>
+                </div>
             </div>
-        </form>
-    </div>
+
+            <div class="col-12">
+                <label asp-for="Notes" class="form-label">Notas</label>
+                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar pago</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

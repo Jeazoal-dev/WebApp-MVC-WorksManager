@@ -104,14 +104,63 @@
     <table class="table table-striped align-middle table-payments">
         <thead>
             <tr>
-                <th>Fecha</th>
+                <th class="sortable @(Model.SortBy == "date" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="date"
+                       asp-route-SortDir="@(Model.SortBy == "date" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-PaymentMethod="@Model.PaymentMethod" asp-route-Bank="@Model.Bank"
+                       asp-route-Reference="@Model.Reference" asp-route-DateFrom="@Model.DateFrom"
+                       asp-route-DateTo="@Model.DateTo" asp-route-AmountMin="@Model.AmountMin"
+                       asp-route-AmountMax="@Model.AmountMax" asp-route-Cancelled="@Model.Cancelled">
+                        Fecha <span class="sort-icon">@(Model.SortBy == "date" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
                 <th>Obra</th>
                 <th>Trabajador</th>
-                <th class="text-end">Monto</th>
-                <th>Método</th>
-                <th>Banco</th>
-                <th>Referencia</th>
-                <th>Estado</th>
+                <th class="sortable text-end @(Model.SortBy == "amount" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="amount"
+                       asp-route-SortDir="@(Model.SortBy == "amount" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-PaymentMethod="@Model.PaymentMethod" asp-route-Bank="@Model.Bank"
+                       asp-route-Reference="@Model.Reference" asp-route-DateFrom="@Model.DateFrom"
+                       asp-route-DateTo="@Model.DateTo" asp-route-AmountMin="@Model.AmountMin"
+                       asp-route-AmountMax="@Model.AmountMax" asp-route-Cancelled="@Model.Cancelled">
+                        Monto <span class="sort-icon">@(Model.SortBy == "amount" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "method" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="method"
+                       asp-route-SortDir="@(Model.SortBy == "method" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-PaymentMethod="@Model.PaymentMethod" asp-route-Bank="@Model.Bank"
+                       asp-route-Reference="@Model.Reference" asp-route-DateFrom="@Model.DateFrom"
+                       asp-route-DateTo="@Model.DateTo" asp-route-AmountMin="@Model.AmountMin"
+                       asp-route-AmountMax="@Model.AmountMax" asp-route-Cancelled="@Model.Cancelled">
+                        Método <span class="sort-icon">@(Model.SortBy == "method" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "bank" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="bank"
+                       asp-route-SortDir="@(Model.SortBy == "bank" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-PaymentMethod="@Model.PaymentMethod" asp-route-Bank="@Model.Bank"
+                       asp-route-Reference="@Model.Reference" asp-route-DateFrom="@Model.DateFrom"
+                       asp-route-DateTo="@Model.DateTo" asp-route-AmountMin="@Model.AmountMin"
+                       asp-route-AmountMax="@Model.AmountMax" asp-route-Cancelled="@Model.Cancelled">
+                        Banco <span class="sort-icon">@(Model.SortBy == "bank" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "status" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="status"
+                       asp-route-SortDir="@(Model.SortBy == "status" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-WorkId="@Model.WorkId" asp-route-WorkerId="@Model.WorkerId"
+                       asp-route-PaymentMethod="@Model.PaymentMethod" asp-route-Bank="@Model.Bank"
+                       asp-route-Reference="@Model.Reference" asp-route-DateFrom="@Model.DateFrom"
+                       asp-route-DateTo="@Model.DateTo" asp-route-AmountMin="@Model.AmountMin"
+                       asp-route-AmountMax="@Model.AmountMax" asp-route-Cancelled="@Model.Cancelled">
+                        Estado <span class="sort-icon">@(Model.SortBy == "status" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
                 <th class="text-end">Acciones</th>
             </tr>
         </thead>
@@ -119,7 +168,7 @@
             @if (!Model.Results.Any())
             {
                 <tr>
-                    <td colspan="9" class="text-center text-muted py-4">No se encontraron resultados.</td>
+                    <td colspan="8" class="text-center text-muted py-4">No se encontraron resultados.</td>
                 </tr>
             }
             else
@@ -127,14 +176,13 @@
                 @foreach (var item in Model.Results)
                 {
                     <tr>
-                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                        <td>@item.WorkWorker?.Work?.Name</td>
-                        <td>@item.WorkWorker?.Worker?.Name</td>
-                        <td class="text-end">@item.Amount.ToString("N2")</td>
-                        <td>@item.PaymentMethod</td>
-                        <td>@item.Bank</td>
-                        <td>@item.Reference</td>
-                        <td>
+                        <td data-label="Fecha">@item.Date.ToString("dd/MM/yyyy")</td>
+                        <td data-label="Obra">@item.WorkWorker?.Work?.Name</td>
+                        <td data-label="Trabajador">@item.WorkWorker?.Worker?.Name</td>
+                        <td data-label="Monto">@item.Amount.ToString("N2")</td>
+                        <td data-label="Método">@item.PaymentMethod</td>
+                        <td data-label="Banco">@item.Bank</td>
+                        <td data-label="Estado">
                             @if (item.Cancelled)
                             {
                                 <span class="badge badge-payment-cancelled">Cancelado</span>
@@ -144,7 +192,7 @@
                                 <span class="badge badge-payment-active">Activo</span>
                             }
                         </td>
-                        <td class="text-end">
+                        <td data-label="Acciones">
                             <div class="action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>

@@ -46,7 +46,8 @@ namespace WebApp.Models
         public int PageSize { get; set; } = 10;
         public int TotalCount { get; set; }
         public int TotalPages { get; set; }
-
+        public string? SortBy { get; set; }
+        public string SortDir { get; set; } = "asc";
         public List<Payment> Results { get; set; } = new();
     }
 }

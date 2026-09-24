@@ -67,12 +67,47 @@
     <table class="table table-striped align-middle table-works">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Documento</th>
-                <th>Teléfono</th>
-                <th>Banco</th>
+                <th class="sortable @(Model.SortBy == "name" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="name"
+                       asp-route-SortDir="@(Model.SortBy == "name" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Document="@Model.Document"
+                       asp-route-Phone="@Model.Phone" asp-route-Bank="@Model.Bank" asp-route-Status="@Model.Status">
+                        Nombre <span class="sort-icon">@(Model.SortBy == "name" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "document" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="document"
+                       asp-route-SortDir="@(Model.SortBy == "document" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Document="@Model.Document"
+                       asp-route-Phone="@Model.Phone" asp-route-Bank="@Model.Bank" asp-route-Status="@Model.Status">
+                        Documento <span class="sort-icon">@(Model.SortBy == "document" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "phone" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="phone"
+                       asp-route-SortDir="@(Model.SortBy == "phone" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Document="@Model.Document"
+                       asp-route-Phone="@Model.Phone" asp-route-Bank="@Model.Bank" asp-route-Status="@Model.Status">
+                        Teléfono <span class="sort-icon">@(Model.SortBy == "phone" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
+                <th class="sortable @(Model.SortBy == "bank" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="bank"
+                       asp-route-SortDir="@(Model.SortBy == "bank" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Document="@Model.Document"
+                       asp-route-Phone="@Model.Phone" asp-route-Bank="@Model.Bank" asp-route-Status="@Model.Status">
+                        Banco <span class="sort-icon">@(Model.SortBy == "bank" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
                 <th>Cuenta</th>
-                <th>Estado</th>
+                <th class="sortable @(Model.SortBy == "status" ? "active" : "")">
+                    <a asp-action="Index" asp-route-SortBy="status"
+                       asp-route-SortDir="@(Model.SortBy == "status" && Model.SortDir == "asc" ? "desc" : "asc")"
+                       asp-route-Name="@Model.Name" asp-route-Document="@Model.Document"
+                       asp-route-Phone="@Model.Phone" asp-route-Bank="@Model.Bank" asp-route-Status="@Model.Status">
+                        Estado <span class="sort-icon">@(Model.SortBy == "status" ? (Model.SortDir == "asc" ? "▲" : "▼") : "▼")</span>
+                    </a>
+                </th>
                 <th class="text-end">Acciones</th>
             </tr>
         </thead>
@@ -92,13 +127,13 @@
                     var badgeClass = isActive ? "badge-worker-active" : "badge-worker-inactive";
 
                     <tr>
-                        <td><strong>@item.Name</strong></td>
-                        <td>@item.Document</td>
-                        <td>@item.Phone</td>
-                        <td>@item.Bank</td>
-                        <td>@item.AccountNumber</td>
-                        <td><span class="badge @badgeClass">@statusText</span></td>
-                        <td class="text-end">
+                        <td data-label="Nombre"><strong>@item.Name</strong></td>
+                        <td data-label="Documento">@item.Document</td>
+                        <td data-label="Teléfono">@item.Phone</td>
+                        <td data-label="Banco">@item.Bank</td>
+                        <td data-label="Cuenta">@item.AccountNumber</td>
+                        <td data-label="Estado"><span class="badge @badgeClass">@statusText</span></td>
+                        <td data-label="Acciones">
                             <div class="action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>
