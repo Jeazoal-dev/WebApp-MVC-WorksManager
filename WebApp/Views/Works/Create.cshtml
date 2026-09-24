@@ -1,73 +1,75 @@
 ﻿@model WebApp.Models.Work
 
 @{
-    ViewData["Title"] = "New work";
+    ViewData["Title"] = "Nueva obra";
 }
 
-<h1>New work</h1>
+<div class="page-header">
+    <h1>Nueva obra</h1>
+</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-card">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label">Nombre</label>
+                <input asp-for="Name" class="form-control" placeholder="Ej. Puente San Martín" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Client" class="control-label"></label>
-                <input asp-for="Client" class="form-control" />
+            <div class="col-md-6">
+                <label asp-for="Client" class="form-label">Cliente</label>
+                <input asp-for="Client" class="form-control" placeholder="Ej. Municipalidad de Lima" />
                 <span asp-validation-for="Client" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="StartDate" class="form-label">Fecha de inicio</label>
                 <input asp-for="StartDate" type="date" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
+            <div class="col-md-6">
+                <label asp-for="EndDate" class="form-label">Fecha de fin</label>
                 <input asp-for="EndDate" type="date" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="ContractAmount" class="control-label"></label>
-                <input asp-for="ContractAmount" class="form-control" />
+            <div class="col-md-6">
+                <label asp-for="ContractAmount" class="form-label">Monto del contrato</label>
+                <input asp-for="ContractAmount" class="form-control" placeholder="0.00" />
                 <span asp-validation-for="ContractAmount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="CollectedAmount" class="control-label"></label>
-                <input asp-for="CollectedAmount" class="form-control" />
+            <div class="col-md-6">
+                <label asp-for="CollectedAmount" class="form-label">Monto cobrado</label>
+                <input asp-for="CollectedAmount" class="form-control" placeholder="0.00" />
                 <span asp-validation-for="CollectedAmount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"
+            <div class="col-md-6">
+                <label asp-for="Status" class="form-label">Estado</label>
+                <select asp-for="Status" class="form-select"
                         asp-items="Html.GetEnumSelectList<WebApp.Models.WorkStatus>()">
                     <option value="">-- Selecciona un estado --</option>
                 </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <textarea asp-for="Notes" class="form-control"></textarea>
+            <div class="col-12">
+                <label asp-for="Notes" class="form-label">Notas</label>
+                <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Observaciones opcionales..."></textarea>
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
+        </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-            </div>
-        </form>
-    </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar obra</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

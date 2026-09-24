@@ -62,7 +62,6 @@
                 <label asp-for="EndDateTo" class="form-label"></label>
                 <input asp-for="EndDateTo" type="date" class="form-control" />
             </div>
-
             <div class="col-md-3">
                 <label asp-for="ContractAmountMin" class="form-label"></label>
                 <input asp-for="ContractAmountMin" class="form-control" placeholder="Mínimo" />
@@ -81,11 +80,11 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-2">
-    <span class="text-muted">Resultados: <strong>@Model.Results.Count</strong></span>
+    <span class="text-muted">Total: <strong>@Model.TotalCount</strong></span>
 </div>
 
 <div class="table-responsive">
-    <table class="table table-striped align-middle">
+    <table class="table table-striped align-middle table-works">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -111,10 +110,10 @@
                     var (statusText, badgeClass) = item.Status switch
                     {
                         WebApp.Models.WorkStatus.InProgress => ("En progreso", "badge-status-inprogress"),
-                        WebApp.Models.WorkStatus.Paused     => ("Pausado",     "badge-status-paused"),
-                        WebApp.Models.WorkStatus.Finished   => ("Finalizado",  "badge-status-finished"),
-                        WebApp.Models.WorkStatus.Cancelled  => ("Cancelado",   "badge-status-cancelled"),
-                        _                                    => (item.Status.ToString(), "badge-status-inprogress")
+                        WebApp.Models.WorkStatus.Paused => ("Pausado", "badge-status-paused"),
+                        WebApp.Models.WorkStatus.Finished => ("Finalizado", "badge-status-finished"),
+                        WebApp.Models.WorkStatus.Cancelled => ("Cancelado", "badge-status-cancelled"),
+                        _ => (item.Status.ToString(), "badge-status-inprogress")
                     };
 
                     <tr>
@@ -125,9 +124,11 @@
                         <td class="text-end">@item.ContractAmount.ToString("N2")</td>
                         <td><span class="badge @badgeClass">@statusText</span></td>
                         <td class="text-end">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            <div class="action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -135,3 +136,11 @@
         </tbody>
     </table>
 </div>
+
+@await Html.PartialAsync("_Pagination", new
+{
+    CurrentPage = Model.Page,
+    TotalPages = Model.TotalPages,
+    TotalCount = Model.TotalCount,
+    PageSize = Model.PageSize
+})

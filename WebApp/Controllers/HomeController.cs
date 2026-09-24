@@ -19,32 +19,57 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Totales generales
-            ViewBag.TotalWorks = await _db.Works.CountAsync();
+            // KPIs
             ViewBag.ActiveWorks = await _db.Works.CountAsync(w => w.Status == WorkStatus.InProgress);
-            ViewBag.TotalWorkers = await _db.Workers.CountAsync(w => w.Status == "Active");
+            ViewBag.TotalWorks = await _db.Works.CountAsync();
+            ViewBag.ActiveWorkers = await _db.Workers.CountAsync(w => w.Status == "Active");
 
-            ViewBag.TotalAgreed = await _db.WorkWorkers.SumAsync(ww => (decimal?)ww.AgreedAmount) ?? 0;
             ViewBag.TotalPaid = await _db.Payments
                 .Where(p => !p.Cancelled)
-                .SumAsync(p => (decimal?)p.Amount) ?? 0;
-            ViewBag.TotalPending = ViewBag.TotalAgreed - ViewBag.TotalPaid;
+                .SumAsync(p => (decimal?)p.Amount) ?? 0m;
 
-            // Últimos 5 pagos
-            ViewBag.RecentPayments = await _db.Payments
-                .Include(p => p.WorkWorker)
-                    .ThenInclude(ww => ww.Work)
-                .Include(p => p.WorkWorker)
-                    .ThenInclude(ww => ww.Worker)
-                .OrderByDescending(p => p.Date)
-                .Take(5)
+            // Pendiente = suma de AgreedAmount - suma de Payments por asignación
+            var pendings = await _db.WorkWorkers
+                .Select(ww => new
+                {
+                    ww.AgreedAmount,
+                    Paid = ww.Payments.Where(p => !p.Cancelled).Sum(p => (decimal?)p.Amount) ?? 0m
+                })
                 .ToListAsync();
 
-            // Obras activas con su info
+            ViewBag.TotalPending = pendings.Sum(x => x.AgreedAmount - x.Paid);
+
+            // Panel "Obras activas"
             ViewBag.ActiveWorksList = await _db.Works
-                .Include(w => w.WorkWorkers)
-                    .ThenInclude(ww => ww.Payments)
                 .Where(w => w.Status == WorkStatus.InProgress)
+                .Select(w => new
+                {
+                    w.Id,
+                    w.Name,
+                    Agreed = w.WorkWorkers.Sum(ww => ww.AgreedAmount),
+                    Paid = w.WorkWorkers.SelectMany(ww => ww.Payments)
+                                        .Where(p => !p.Cancelled)
+                                        .Sum(p => (decimal?)p.Amount) ?? 0m,
+                    Pending = w.WorkWorkers.Sum(ww => ww.AgreedAmount)
+                              - (w.WorkWorkers.SelectMany(ww => ww.Payments)
+                                              .Where(p => !p.Cancelled)
+                                              .Sum(p => (decimal?)p.Amount) ?? 0m)
+                })
+                .OrderByDescending(w => w.Agreed)
+                .ToListAsync();
+
+            // Panel "Pagos recientes"
+            ViewBag.RecentPayments = await _db.Payments
+                .Where(p => !p.Cancelled)
+                .OrderByDescending(p => p.Date)
+                .Take(5)
+                .Select(p => new
+                {
+                    p.Date,
+                    Worker = p.WorkWorker!.Worker!.Name,
+                    Work = p.WorkWorker!.Work!.Name,
+                    p.Amount
+                })
                 .ToListAsync();
 
             return View();

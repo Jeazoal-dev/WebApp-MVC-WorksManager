@@ -97,11 +97,11 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-2">
-    <span class="text-muted">Resultados: <strong>@Model.Results.Count</strong></span>
+    <span class="text-muted">Total: <strong>@Model.TotalCount</strong></span>
 </div>
 
 <div class="table-responsive">
-    <table class="table table-striped align-middle">
+    <table class="table table-striped align-middle table-payments">
         <thead>
             <tr>
                 <th>Fecha</th>
@@ -145,9 +145,11 @@
                             }
                         </td>
                         <td class="text-end">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            <div class="action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Detalles</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -155,3 +157,11 @@
         </tbody>
     </table>
 </div>
+
+@await Html.PartialAsync("_Pagination", new
+{
+    CurrentPage = Model.Page,
+    TotalPages = Model.TotalPages,
+    TotalCount = Model.TotalCount,
+    PageSize = Model.PageSize
+})

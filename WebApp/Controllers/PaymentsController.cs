@@ -65,8 +65,18 @@ namespace WebApp.Controllers
             filter.Works = await _db.Works.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
             filter.Workers = await _db.Workers.AsNoTracking().OrderBy(w => w.Name).ToListAsync();
 
+            // Paginación
+            filter.Page = filter.Page < 1 ? 1 : filter.Page;
+            filter.TotalCount = await query.CountAsync();
+            filter.TotalPages = (int)Math.Ceiling((double)filter.TotalCount / filter.PageSize);
+
+            if (filter.Page > filter.TotalPages && filter.TotalPages > 0)
+                filter.Page = filter.TotalPages;
+
             filter.Results = await query
                 .OrderByDescending(p => p.Date)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
 
             return View(filter);

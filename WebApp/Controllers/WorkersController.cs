@@ -17,6 +17,8 @@ namespace WebApp.Controllers
 
         // GET: Workers
         // Aplica los filtros opcionales del WorkerFilterViewModel.
+        // GET: Workers
+        // GET: Workers
         public async Task<IActionResult> Index(WorkerFilterViewModel filter)
         {
             var query = _db.Workers.AsNoTracking().AsQueryable();
@@ -36,8 +38,18 @@ namespace WebApp.Controllers
             if (!string.IsNullOrWhiteSpace(filter.Status))
                 query = query.Where(w => w.Status == filter.Status);
 
+            // Paginación
+            filter.Page = filter.Page < 1 ? 1 : filter.Page;
+            filter.TotalCount = await query.CountAsync();
+            filter.TotalPages = (int)Math.Ceiling((double)filter.TotalCount / filter.PageSize);
+
+            if (filter.Page > filter.TotalPages && filter.TotalPages > 0)
+                filter.Page = filter.TotalPages;
+
             filter.Results = await query
                 .OrderBy(w => w.Name)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
 
             return View(filter);

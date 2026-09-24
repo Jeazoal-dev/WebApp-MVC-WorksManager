@@ -24,6 +24,22 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// ============================================================
+// Aplicar migraciones + cargar datos de prueba si la BD está vacía.
+// ⚠️ En producción, comenta o elimina el bloque de SeedAsync.
+// ============================================================
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var db = services.GetRequiredService<ApplicationDbContext>();
+
+    // Aplica las migraciones pendientes
+    db.Database.Migrate();
+
+    // Carga datos de prueba (solo si no hay obras registradas)
+    await DbSeeder.SeedAsync(db);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

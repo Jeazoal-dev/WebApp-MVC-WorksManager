@@ -1,0 +1,95 @@
+﻿@model dynamic
+@{
+    int currentPage = Model.CurrentPage;
+    int totalPages = Model.TotalPages;
+    int totalCount = Model.TotalCount;
+
+    if (totalPages <= 1) { return; }
+
+    // Reconstruye los filtros actuales del querystring (excepto "page")
+    var baseRoute = Context.Request.Query
+        .Where(q => q.Key != "page" && !string.IsNullOrEmpty(q.Value))
+        .ToDictionary(q => q.Key, q => q.Value.ToString());
+
+    // Rango de páginas a mostrar: 2 atrás y 2 adelante
+    int start = Math.Max(1, currentPage - 2);
+    int end = Math.Min(totalPages, currentPage + 2);
+}
+
+<nav class="pagination-wrap" aria-label="Paginación">
+    <span class="pagination-info">
+        Mostrando <strong>@(((currentPage - 1) * Model.PageSize) + 1)</strong>
+        – <strong>@(Math.Min(currentPage * Model.PageSize, totalCount))</strong>
+        de <strong>@totalCount</strong>
+    </span>
+
+    <ul class="pagination">
+        @* Primera *@
+        @if (currentPage > 1)
+        {
+            var rv = new Dictionary<string, string>(baseRoute) { ["page"] = "1" };
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="rv">«</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">«</span></li>
+        }
+
+        @* Anterior *@
+        @if (currentPage > 1)
+        {
+            var rv = new Dictionary<string, string>(baseRoute) { ["page"] = (currentPage - 1).ToString() };
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="rv">‹</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">‹</span></li>
+        }
+
+        @* Números *@
+        @for (int i = start; i <= end; i++)
+        {
+            var rv = new Dictionary<string, string>(baseRoute) { ["page"] = i.ToString() };
+            if (i == currentPage)
+            {
+                <li class="page-item active"><span class="page-link">@i</span></li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-all-route-data="rv">@i</a>
+                </li>
+            }
+        }
+
+        @* Siguiente *@
+        @if (currentPage < totalPages)
+        {
+            var rv = new Dictionary<string, string>(baseRoute) { ["page"] = (currentPage + 1).ToString() };
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="rv">›</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">›</span></li>
+        }
+
+        @* Última *@
+        @if (currentPage < totalPages)
+        {
+            var rv = new Dictionary<string, string>(baseRoute) { ["page"] = totalPages.ToString() };
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="rv">»</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">»</span></li>
+        }
+    </ul>
+</nav>

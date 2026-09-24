@@ -40,7 +40,13 @@ namespace WebApp.Models
         public List<Work> Works { get; set; } = new();
         public List<Worker> Workers { get; set; } = new();
 
-        // Resultados
+
+        // Paginación
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public int TotalCount { get; set; }
+        public int TotalPages { get; set; }
+
         public List<Payment> Results { get; set; } = new();
     }
 }

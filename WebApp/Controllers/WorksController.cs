@@ -49,8 +49,18 @@ namespace WebApp.Controllers
             if (filter.ContractAmountMax.HasValue)
                 query = query.Where(w => w.ContractAmount <= filter.ContractAmountMax.Value);
 
+            // Paginación
+            filter.Page = filter.Page < 1 ? 1 : filter.Page;
+            filter.TotalCount = await query.CountAsync();
+            filter.TotalPages = (int)Math.Ceiling((double)filter.TotalCount / filter.PageSize);
+
+            if (filter.Page > filter.TotalPages && filter.TotalPages > 0)
+                filter.Page = filter.TotalPages;
+
             filter.Results = await query
                 .OrderByDescending(w => w.StartDate)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
 
             return View(filter);

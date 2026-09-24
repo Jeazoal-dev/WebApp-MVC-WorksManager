@@ -1,138 +1,176 @@
 ﻿@{
     ViewData["Title"] = "Dashboard";
+
+    // Valores del ViewBag (ajusta los nombres si en tu controller son distintos)
+    int activeWorks    = ViewBag.ActiveWorks   ?? 0;
+    int totalWorks     = ViewBag.TotalWorks    ?? 0;
+    int activeWorkers  = ViewBag.ActiveWorkers ?? 0;
+    decimal totalPaid  = ViewBag.TotalPaid     ?? 0m;
+    decimal totalPend  = ViewBag.TotalPending  ?? 0m;
+
+    // Porcentajes para las barras de progreso
+    var worksPercent   = totalWorks > 0 ? (activeWorks * 100 / totalWorks) : 0;
+    var workersPercent = totalWorks > 0 ? Math.Min((activeWorkers * 100 / Math.Max(totalWorks, 1)), 100) : 0;
+    var paidTotal      = totalPaid + totalPend;
+    var paidPercent    = paidTotal > 0 ? (int)(totalPaid * 100 / paidTotal) : 0;
+    var pendingPercent = 100 - paidPercent;
 }
 
-<h1 class="mb-4">Dashboard</h1>
-
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Active Works</h5>
-                <h2>@ViewBag.ActiveWorks</h2>
-                <small>of @ViewBag.TotalWorks total</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Active Workers</h5>
-                <h2>@ViewBag.TotalWorkers</h2>
-                <small>available</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Total Paid</h5>
-                <h2>@ViewBag.TotalPaid.ToString("N2")</h2>
-                <small>to workers</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-danger">
-            <div class="card-body">
-                <h5 class="card-title">Total Pending</h5>
-                <h2>@ViewBag.TotalPending.ToString("N2")</h2>
-                <small>to pay</small>
-            </div>
-        </div>
+<div class="dashboard-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="dashboard-subtitle">Resumen general · @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy")</p>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Active works</h5>
+@* ---------- KPIs ---------- *@
+<div class="kpi-grid">
+
+    <a class="kpi-card kpi-blue" asp-controller="Works" asp-action="Index">
+        <div class="kpi-header">
+            <p class="kpi-label">Obras activas</p>
+            <div class="kpi-icon">🏗️</div>
+        </div>
+        <div class="kpi-value">@activeWorks</div>
+        <p class="kpi-subtitle">de @totalWorks en total</p>
+        <div class="kpi-progress">
+            <div class="kpi-progress-fill" style="width: @worksPercent%"></div>
+        </div>
+    </a>
+
+    <a class="kpi-card kpi-cyan" asp-controller="Workers" asp-action="Index">
+        <div class="kpi-header">
+            <p class="kpi-label">Trabajadores activos</p>
+            <div class="kpi-icon">👷</div>
+        </div>
+        <div class="kpi-value">@activeWorkers</div>
+        <p class="kpi-subtitle">disponibles</p>
+        <div class="kpi-progress">
+            <div class="kpi-progress-fill" style="width: @workersPercent%"></div>
+        </div>
+    </a>
+
+    <a class="kpi-card kpi-green" asp-controller="Payments" asp-action="Index">
+        <div class="kpi-header">
+            <p class="kpi-label">Total pagado</p>
+            <div class="kpi-icon">💵</div>
+        </div>
+        <div class="kpi-value">@totalPaid.ToString("N2")</div>
+        <p class="kpi-subtitle">a trabajadores</p>
+        <div class="kpi-progress">
+            <div class="kpi-progress-fill" style="width: @paidPercent%"></div>
+        </div>
+    </a>
+
+    <a class="kpi-card kpi-red" asp-controller="WorkWorkers" asp-action="Index">
+        <div class="kpi-header">
+            <p class="kpi-label">Total pendiente</p>
+            <div class="kpi-icon">⏳</div>
+        </div>
+        <div class="kpi-value">@totalPend.ToString("N2")</div>
+        <p class="kpi-subtitle">por pagar</p>
+        <div class="kpi-progress">
+            <div class="kpi-progress-fill" style="width: @pendingPercent%"></div>
+        </div>
+    </a>
+
+</div>
+
+@* ---------- Paneles inferiores ---------- *@
+<div class="row g-4">
+
+    @* Panel: Obras activas *@
+    <div class="col-lg-6">
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Obras activas</h2>
+                <a class="panel-link" asp-controller="Works" asp-action="Index">Ver todas →</a>
             </div>
-            <div class="card-body">
-                @if (ViewBag.ActiveWorksList != null)
+            <div class="panel-body">
+                @if (ViewBag.ActiveWorksList != null && ((IEnumerable<dynamic>)ViewBag.ActiveWorksList).Any())
                 {
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Work</th>
-                                <th>Agreed</th>
-                                <th>Paid</th>
-                                <th>Pending</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var work in ViewBag.ActiveWorksList)
-                            {
-                                var agreed = 0m;
-                                var paid = 0m;
-                                foreach (var ww in work.WorkWorkers)
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Obra</th>
+                                    <th class="text-end">Acordado</th>
+                                    <th class="text-end">Pagado</th>
+                                    <th class="text-end">Pendiente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var w in ViewBag.ActiveWorksList)
                                 {
-                                    agreed += ww.AgreedAmount;
-                                    foreach (var p in ww.Payments)
-                                    {
-                                        if (!p.Cancelled) paid += p.Amount;
-                                    }
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="Works" asp-action="Details" asp-route-id="@w.Id">
+                                                @w.Name
+                                            </a>
+                                        </td>
+                                        <td class="text-end">@(((decimal)w.Agreed).ToString("N2"))</td>
+                                        <td class="text-end">@(((decimal)w.Paid).ToString("N2"))</td>
+                                        <td class="text-end fw-semibold">@(((decimal)w.Pending).ToString("N2"))</td>
+                                    </tr>
                                 }
-                                var pending = agreed - paid;
-
-                                <tr>
-                                    <td>
-                                        <a asp-controller="Works" asp-action="Details" asp-route-id="@work.Id">
-                                            @work.Name
-                                        </a>
-                                    </td>
-                                    <td>@agreed.ToString("N2")</td>
-                                    <td>@paid.ToString("N2")</td>
-                                    <td>@pending.ToString("N2")</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 }
                 else
                 {
-                    <p class="text-muted">No active works.</p>
+                    <div class="panel-empty">
+                        <span class="panel-empty-icon">📭</span>
+                        No hay obras activas por ahora.
+                    </div>
                 }
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Recent payments</h5>
+    @* Panel: Pagos recientes *@
+    <div class="col-lg-6">
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Pagos recientes</h2>
+                <a class="panel-link" asp-controller="Payments" asp-action="Index">Ver todos →</a>
             </div>
-            <div class="card-body">
-                @if (ViewBag.RecentPayments != null)
+            <div class="panel-body">
+                @if (ViewBag.RecentPayments != null && ((IEnumerable<dynamic>)ViewBag.RecentPayments).Any())
                 {
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Worker</th>
-                                <th>Work</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var p in ViewBag.RecentPayments)
-                            {
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
                                 <tr>
-                                    <td>@p.Date.ToString("dd/MM/yyyy")</td>
-                                    <td>@p.WorkWorker?.Worker?.Name</td>
-                                    <td>@p.WorkWorker?.Work?.Name</td>
-                                    <td>@p.Amount.ToString("N2")</td>
+                                    <th>Fecha</th>
+                                    <th>Trabajador</th>
+                                    <th>Obra</th>
+                                    <th class="text-end">Monto</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var p in ViewBag.RecentPayments)
+                                {
+                                    <tr>
+                                        <td>@(((DateTime)p.Date).ToString("dd/MM/yyyy"))</td>
+                                        <td>@p.Worker</td>
+                                        <td>@p.Work</td>
+                                        <td class="text-end fw-semibold">@(((decimal)p.Amount).ToString("N2"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 }
                 else
                 {
-                    <p class="text-muted">No recent payments.</p>
+                    <div class="panel-empty">
+                        <span class="panel-empty-icon">💸</span>
+                        No hay pagos registrados recientemente.
+                    </div>
                 }
             </div>
         </div>
     </div>
+
 </div>
